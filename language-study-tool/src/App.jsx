@@ -31,8 +31,26 @@ function App()
   useEffect(() => { localStorage.setItem("decks", JSON.stringify(decks)); }, [decks]);
 
   const [editingId, setEditingId] = useState(null);
-  const [selectedDeckId, setSelectedDeckId] = useState(null);
+
+  const [selectedDeckId, setSelectedDeckId] = useState(() => {
+    return localStorage.getItem("selectedDeckId") || null;
+  });
+
+  useEffect(() => {
+    if(selectedDeckId === null)
+    {
+      localStorage.removeItem("selectedDeckId");
+    } 
+    
+    else
+    {
+      localStorage.setItem("selectedDeckId", selectedDeckId);
+    }
+  }, [selectedDeckId]);
+
+
   const selectedDeck = decks.find(d => d.id === selectedDeckId);
+
 
   const createDeck = () => {
     const deck = {
@@ -54,6 +72,8 @@ function App()
     setDecks(decks => decks.map(deck => deck.id === id ? {...deck, name: newName} : deck));
   };
 
+  const [sideByCardId, setSideByCardId] = useState({});
+
   const createCard = () => {
     const card = {
       id: "card_" + crypto.randomUUID(),
@@ -66,7 +86,39 @@ function App()
   };
 
   const renameCard = (id, newText, side) => {
-    
+    setDecks(decks =>
+      decks.map(deck =>
+        deck.id === selectedDeckId
+          ? {
+              ...deck,
+              cards: deck.cards.map(card =>
+                card.id === id
+                  ? {
+                      ...card,
+                      [side]: newText
+                    }
+                  : card
+              )
+            }
+          : deck
+      )
+    );
+  };
+
+  const flipCard = (card) => {
+    setSideByCardId(prev => {
+      const current = prev[card.id] || "front";
+      const next = current === "front" ? "back" : "front";
+
+      // Auto-edit if the next side is blank
+      if(!card[next]) 
+      {
+        setEditingId(card.id);
+        return { ...prev, [card.id]: next };
+      }
+
+      return { ...prev, [card.id]: next };
+    });
   };
 
   const deleteCard= (id) => {
@@ -140,9 +192,37 @@ function App()
 
         <div className='card-list'>
           {selectedDeck.cards.map((card) => {
+            const side = sideByCardId[card.id] || "front";
+
             return (
-              <div key={card.id} className='card'>
-                <h2>{card.front}</h2>
+              <div key={card.id} className='card' onClick={() => flipCard(card)}>
+                {editingId === card.id ? (
+                  <input autoFocus defaultValue={card[side]} 
+                    onClick={(e) => { e.stopPropagation(); }}
+
+                    onBlur={e => {
+                      renameCard(card.id, e.target.value, side); 
+                      setEditingId(null);
+                    }}
+
+                    onKeyDown={e => {
+                      if(e.key === "Enter") 
+                      {
+                        renameCard(card.id, e.target.value, side);
+                        setEditingId(null);
+                      }
+                    
+                      else if(e.key === "Escape") 
+                      {
+                        setEditingId(null);
+                      }
+                    }}
+                  />
+                ) : 
+                (
+                  <h2 onClick={(e) => { e.stopPropagation(); setEditingId(card.id); }}>{card[side]}</h2>
+                )}
+
                 <button className='delete-card' onClick={(e) => {e.stopPropagation(); deleteCard(card.id); }}>Delete</button>
               </div>
             )
