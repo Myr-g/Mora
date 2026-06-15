@@ -72,7 +72,7 @@ function DeckView({ decks, setDecks, selectedDeckId, setSelectedDeckId, selected
 
         <div className='deck-actions'>
           <button className='create-card' onClick={createCard}>Add Card</button>
-          <button className='study-button' onClick={() => setIsStudying(true)}>Study</button>
+          <button className='study-button' onClick={() => setIsStudying(true)} disabled={selectedDeck.cards.length === 0}>Study</button>
         </div>
 
         <div className='card-list'>

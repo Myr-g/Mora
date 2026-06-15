@@ -36,6 +36,11 @@
   gap: 2rem;
 }
 
+.study-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
 .study-modal {
   position: fixed;
   top: 50%;
@@ -67,4 +72,41 @@
   margin-top: 1.5rem;
   display: flex;
   justify-content: space-between;
+}
+
+.card-counter {
+  text-align: center;
+  margin: 0.5rem 0 1rem;
+  font-size: 1.1rem;
+  opacity: 0.8;
+}
+
+
+.flashcards {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.flashcard {
+  padding: 1rem 2rem;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 1.5rem;
+  text-align: center;
+  min-width: 200px;  
+}
+
+.flashcard:hover {
+  border-color: gray;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.08);
+  cursor: pointer;
+}
+
+.previous-card, .next-card {
+  background: none;
+  border: none;
+  font-size: 2rem;
+  cursor: pointer;
 }
