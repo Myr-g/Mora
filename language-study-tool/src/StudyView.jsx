@@ -20,12 +20,22 @@ function StudyView({ selectedDeck, setIsStudying })
 
     const [answers, setAnswers] = useState([]); 
 
+    useEffect(() => {
+        if(studyMode === "write-the-definition")
+        {
+            setAnswers(Array(selectedDeck.cards.length).fill(""));
+        }
+    }, [studyMode]);
+
+    const [showResults, setShowResults] = useState(false);
+
     // Reset State
     const resetStudyState = () => {
         setCurrentCardIndex(0);
         setSide("front");
         setChoices([]);
         setAnswers([]);
+        setShowResults(false);
     };
 
     // Flashcard Functions
@@ -80,6 +90,15 @@ function StudyView({ selectedDeck, setIsStudying })
         ]);
 
         setCurrentCardIndex(i => i + 1);
+    };
+
+    // Write the Definition Functions
+    const handleDefinition = (definition, index) => {
+        setAnswers(prev => {
+            const updated = [...prev];
+            updated[index] = definition;
+            return updated;
+        });
     };
 
     return (
@@ -146,6 +165,51 @@ function StudyView({ selectedDeck, setIsStudying })
                                     </div>
                                 </div>
                             ))}
+                        </>
+                    )}
+                </>
+            )}
+
+            {studyMode === "write-the-definition" && (
+                <>
+                    <section className='study-view-header'>
+                        <h1>{selectedDeck.name} - Write the Definition</h1>
+                    </section>
+
+                    <button className='study-button' onClick={() => setShowStudyModal(true)}>Study Options</button>
+
+                    {!showResults && (
+                        <>
+                            <div className='write-the-definition'>
+                                {selectedDeck.cards.map((card, index) => (
+                                    <div key={index} className='write-the-definition-question'>
+                                        <p>{card.front}</p>
+                                        <input className='write-the-definition-answer' value={answers[index] || ""} onChange={(e) => { handleDefinition(e.target.value, index); }}></input>
+                                    </div>
+                                 ))}
+                            </div>
+
+                            <button className='check-answers-button' onClick={() => setShowResults(true)}>Check Answers</button>
+                        </>
+                    )}
+
+                    {showResults && (
+                        <>
+                            <p className="card-counter">Score: {selectedDeck.cards.filter((card, index) => answers[index].trim().toLowerCase() === card.back.trim().toLowerCase()).length} / {answers.length}</p>
+                            <div className='write-the-definition'>
+                                {selectedDeck.cards.map((card, index) => (
+                                    <div key={index} className='write-the-definition-question'>
+                                        <p>{card.front}</p>
+                                        <input className={`write-the-definition-answer ${answers[index].trim().toLowerCase() === card.back.trim().toLowerCase() ? "correct" : "incorrect"}`} value={answers[index] || ""} readOnly></input>
+
+                                        {answers[index].trim().toLowerCase() !== card.back.trim().toLowerCase() && (
+                                            <>
+                                                <p className='write-the-definition-correct-answer'>{card.back}</p>
+                                            </>
+                                        )}
+                                    </div>
+                                 ))}
+                            </div>
                         </>
                     )}
                 </>

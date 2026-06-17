@@ -155,3 +155,48 @@
   flex-direction: column;
   gap: 0.75rem;
 }
+
+.write-the-definition {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+
+  padding: 2rem;
+  border: 1px solid white;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+  width: 75%;
+  margin: 0 auto;
+  margin-bottom: 1rem;
+}
+
+.write-the-definition-question {
+  break-inside: avoid;
+  margin-bottom: 2rem;
+}
+
+.write-the-definition-answer {
+  background: none;
+  border: none;
+  border-bottom: 1px solid gray;
+  text-align: center;
+}
+
+.write-the-definition-answer:focus {
+  border: none;
+  outline: none;
+  border-bottom: 1px solid white;
+}
+
+.write-the-definition-answer.correct {
+  border-bottom: 1px solid lightgreen;
+}
+
+.write-the-definition-answer.incorrect {
+  border-bottom: 1px solid red;
+}
+
+.write-the-definition-correct-answer {
+  color: lightgreen;
+  font-size: 80%;
+}
