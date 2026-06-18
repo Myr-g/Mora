@@ -1,32 +1,235 @@
+/*---- Themes ----*/
+:root {
+  --bg-page: #efefef;
+  --bg-paper: #ffffff;
+
+  --text-main: #222;
+  --text-muted: #555;
+
+  --accent: rgba(102, 117, 134, 1);
+
+  --border: #ddd;
+  --shadow: rgba(0, 0, 0, 0.08);
+
+  --svg-color: #555;
+
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+
+  --transition-fast: 0.15s ease;
+}
+
+[data-theme="dark"] {
+  --bg-page: #001935;
+  --bg-paper: #152844;
+
+  --text-main: #ffffff;
+  --text-muted: #9fb3c8;
+
+  --accent: #00b8ff;
+
+  --border: #223b5a;
+  --shadow: rgba(0, 0, 0, 0.35);
+}
+
+/*---- General ----*/
+#root {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+body {
+  margin: 0;
+
+  background: var(--bg-page);
+  color: var(--text-main);
+
+  font-family: Inter, system-ui, sans-serif;
+}
+
+/*---- Deck List ----*/
 .header {
-  padding: 10px;
-  border-bottom: 1px solid white;
+  margin-bottom: 2rem;
 }
 
-.deck-list, .card-list {
-  column-count: 2;
-  column-gap: 1.5rem;
-  padding: 10px;
+.header h1 {
+  margin: 0;
+
+  color: var(--text-main);
+
+  font-size: 3rem;
+  font-weight: 800;
+  letter-spacing: -1px;
 }
 
-.deck, .card {
-  padding: 1.5rem 1.75rem;
+.create-deck {
+  background: var(--accent);
 
-  border: 1px solid white;
-  border-radius: 18px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  color: white;
 
-  break-inside: avoid;
-  margin-bottom: 1.5rem;
+  border: none;
+  border-radius: 999px;
 
-  transition: transform 0.2s ease, border-color 0.2s ease, background 0.2s ease;
-}
+  padding: 0.8rem 1.4rem;
 
-.deck:hover, .card:hover {
-  transform: translateY(-2px);
-  border-color: gray;
-  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.08);
+  font-size: 0.95rem;
+  font-weight: 600;
+
   cursor: pointer;
+
+  transition: 0.2s;
+}
+
+.create-deck:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.1);
+}
+
+.create-deck:active {
+  transform: scale(0.98);
+}
+
+.deck-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1rem;
+
+  margin-top: 1.5rem;
+}
+
+.deck {
+  display: flex;
+  flex-direction: column;
+
+  padding: 1rem;
+  min-height: 140px;
+  
+  background: var(--bg-paper);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 2px 8px var(--shadow);
+
+  cursor: pointer;
+
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.deck:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 20px var(--shadow);
+}
+
+.deck:active {
+  transform: scale(0.98);
+}
+
+.deck-h2-container {
+  flex: 1;
+  margin: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.deck h2 {
+  padding: 0;
+  color: var(--text-main);
+  font-size: 1.2rem;
+  font-weight: 700;
+}
+
+.deck h2:hover {
+  text-decoration: underline;
+}
+
+.deck input {
+  flex: 1;
+  margin: 0;
+  padding: 0.5rem;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+
+  color: var(--text-main);
+  font-size: 1.15rem;
+}
+
+.deck p {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+.deck .delete-deck {
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.deck:hover .delete-deck {
+  opacity: 1;
+}
+
+.delete-deck {
+  margin-top: auto;
+  align-self: flex-end;
+
+  background: transparent;
+  border: none;
+
+  color: var(--svg-color);
+
+  cursor: pointer;
+}
+
+.delete-deck:hover {
+  color: #ef4444;
+}
+
+.delete-deck:active {
+  transform: scale(0.98);
+}
+
+/*---- Deck View ----*/
+.deck-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+
+  margin-bottom: 2rem;
+}
+
+.back-button {
+  background: none;
+  border: none;
+
+  color: var(--text-muted);
+
+  font-size: 1.5rem;
+
+  cursor: pointer;
+
+  padding: 0;
+}
+
+.back-button:hover {
+  color: var(--text-main);
+  transform: translateX(-2px);
+}
+
+.deck-name {
+  margin: 0;
+
+  font-size: 2rem;
+  font-weight: 700;
+
+  color: var(--text-main);
 }
 
 .deck-actions {
@@ -34,6 +237,55 @@
   flex-direction: row;
   justify-content: center;
   gap: 2rem;
+  margin-bottom: 2rem;
+}
+
+.create-card {
+  background: var(--accent);
+  color: white;
+  border: none;
+  border-radius: var(--radius-md);
+
+  padding: 0.75rem 1.25rem;
+
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition: var(--transition-fast);
+}
+
+.create-card:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.1);
+}
+
+.create-card:active {
+  transform: scale(0.98);
+}
+
+.study-button {
+  background: var(--accent);
+  color: white;
+  border: none;
+  border-radius: var(--radius-md);
+
+  padding: 0.75rem 1.25rem;
+
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition: var(--transition-fast);
+}
+
+.study-button:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.1);
+}
+
+.study-button:active {
+  transform: scale(0.98);
 }
 
 .study-button:disabled {
@@ -41,53 +293,193 @@
   cursor: not-allowed;
 }
 
+.card-list {
+  display: grid;
+
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1rem;
+}
+
+.card {
+  background: var(--bg-paper);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+
+  min-height: 90px;
+
+  padding: 1rem;
+
+  display: flex;
+  flex-direction: column;
+
+  cursor: pointer;
+
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+  
+  box-shadow: 0 2px 8px var(--shadow);
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px var(--shadow);
+}
+
+.card-side {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+
+  margin-bottom: 0.75rem;
+}
+
+.card h2 {
+  flex: 1;
+  margin: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+
+  font-size: 1.15rem;
+  font-weight: 500;
+}
+
+.card h2:hover {
+  text-decoration: underline;
+}
+
+.card input {
+  flex: 1;
+  margin: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+
+  font-size: 1.15rem;
+  font-weight: 500;
+}
+
+.card .delete-card {
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.card:hover .delete-card {
+  opacity: 1;
+}
+
+.delete-card {
+  align-self: flex-end;
+
+  background: none;
+  border: none;
+
+  color: var(--text-muted);
+
+  cursor: pointer;
+}
+
+.delete-card:hover {
+  color: #ef4444;
+}
+
+.delete-card:active {
+  transform: scale(0.98);
+}
+
+/*---- Study View ----*/
 .study-modal-overlay {
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0,0,0,0.4);
+  inset: 0;
+
+  background: rgba(0, 0, 0, 0.35);
+
   display: flex;
   justify-content: center;
   align-items: center;
-}
 
-.study-modal {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  
-  padding: 2rem;
-  border: 1px solid white;
-  border-radius: 12px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+  backdrop-filter: blur(4px);
 
-  width: 400px;
-  max-width: 90%;
   z-index: 1000;
 }
 
+.study-modal {
+  background: var(--bg-paper);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+
+  width: min(500px, 90vw);
+
+  padding: 1.5rem;
+
+  box-shadow: 0 12px 32px var(--shadow);
+}
+
 .study-modal-header {
-  border-bottom: 1px solid white;
-  margin-bottom: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.study-modal-header h2 {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 700;
 }
 
 .study-modal-options {
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
+  gap: 0.5rem;
+
+  margin-bottom: 1.5rem;
+}
+
+.study-modal-options label {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+}
+
+.study-modal-select {
+  padding: 0.75rem;
+
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--bg-paper);
+  color: var(--text-main);
+
+  font-size: 1rem;
 }
 
 .study-modal-actions {
-  margin-top: 1.5rem;
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end;
+  gap: 0.75rem;
 }
 
-.study-button {
-  margin-bottom: 1rem;
+.study-modal-actions button {
+  background: var(--accent);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  
+  color: white;
+  font-weight: 600;
+
+  padding: 0.75rem 1rem;
+
+  cursor: pointer;
+}
+
+.study-modal-actions button:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.1);
+}
+
+.study-modal-actions button:active {
+  transform: scale(0.98);
 }
 
 .card-counter {

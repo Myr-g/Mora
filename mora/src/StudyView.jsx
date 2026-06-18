@@ -312,7 +312,7 @@ function StudyView({ selectedDeck, setIsStudying })
                     <div className='study-modal-overlay'>
                         <div className='study-modal'>
                             <div className='study-modal-header'>
-                                <h2>Study Options</h2>
+                                <h2>Choose a Study Mode</h2>
                             </div>
 
                             <div className='study-modal-options'>
