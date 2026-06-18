@@ -25,6 +25,11 @@ function StudyView({ selectedDeck, setIsStudying })
         {
             setAnswers(Array(selectedDeck.cards.length).fill(""));
         }
+
+        if(studyMode === "matching")
+        {
+            shuffleAnswers();
+        }
     }, [studyMode]);
 
     const [showResults, setShowResults] = useState(false);
@@ -36,6 +41,8 @@ function StudyView({ selectedDeck, setIsStudying })
         setChoices([]);
         setAnswers([]);
         setShowResults(false);
+        setSelectedAnswer(null);
+        setMatches([]);
     };
 
     // Flashcard Functions
@@ -91,6 +98,29 @@ function StudyView({ selectedDeck, setIsStudying })
 
         setCurrentCardIndex(i => i + 1);
     };
+
+    // Matching Functions
+    const [selectedAnswer, setSelectedAnswer] = useState(null);
+    const [matches, setMatches] = useState([]);
+
+    const shuffleAnswers = () => {
+        const answers = selectedDeck.cards.map(card => card.back);
+        const shuffled_answers = shuffle(answers);
+        setAnswers(shuffled_answers);
+    };
+
+    const handleMatch = (index) => {
+        if(selectedAnswer) 
+        {
+            setMatches(prev => {
+                const updated = [...prev];
+                updated[index] = selectedAnswer;
+                return updated;
+            });
+
+            setSelectedAnswer(null);
+        }
+    }
 
     // Write the Definition Functions
     const handleDefinition = (definition, index) => {
@@ -170,6 +200,67 @@ function StudyView({ selectedDeck, setIsStudying })
                 </>
             )}
 
+            {studyMode == "matching" && (
+                <>
+                    <section className='study-view-header'>
+                        <h1>{selectedDeck.name} - Matching</h1>
+                    </section>
+
+                    <button className='study-button' onClick={() => setShowStudyModal(true)}>Study Options</button>
+
+                    {!showResults && (
+                        <>
+                            <div className='matching'>
+                                <div className='matching-questions'>
+                                    {selectedDeck.cards.map((card, index) => (
+                                        <div key={index} className='matching-prompt'>
+                                            <div className='matching-question'>{card.front}</div>
+                                            <div className='matching-slot' onClick={() => handleMatch(index)}>{matches[index] || ""}</div>
+                                        </div>
+                                    ))}
+                                </div>
+
+                                <div className='matching-answers'>
+                                    {answers.filter(answer => !matches.includes(answer)).map(answer => (
+                                        <div key={answer} className='matching-question' onClick={() => setSelectedAnswer(answer)}>{answer}</div>
+                                    ))}
+                                </div>
+                            </div>
+
+                            <button className='check-answers-button' onClick={() => setShowResults(true)}>Check Answers</button>
+                        </>
+                    )}
+
+                    {showResults && (
+                        <>
+                            <p className="card-counter">Score: {selectedDeck.cards.filter((card, index) => (matches[index] || "").trim().toLowerCase() === card.back.trim().toLowerCase()).length} / {selectedDeck.cards.length}</p>
+
+                            <div className='matching'>
+                                <div className='matching-questions'>
+                                    {selectedDeck.cards.map((card, index) => (
+                                        <div key={index} className='matching-prompt'>
+                                            <div className='matching-question'>{card.front}</div>
+                                            <div className={`matching-slot ${(matches[index] || "").trim().toLowerCase() === card.back.trim().toLowerCase() ? "correct" : "incorrect"}`}>{matches[index] || ""}</div>
+                                            {(matches[index] || "").trim().toLowerCase() !== card.back.trim().toLowerCase() && (
+                                            <>
+                                                <p className='matching-correct-answer'>{card.back}</p>
+                                            </>
+                                        )}
+                                        </div>
+                                    ))}
+                                </div>
+
+                                <div className='matching-answers'>
+                                    {answers.filter(answer => !matches.includes(answer)).map(answer => (
+                                        <div key={answer} className='matching-question'>{answer}</div>
+                                    ))}
+                                </div>
+                            </div>
+                        </>
+                    )}
+                </>
+            )}
+
             {studyMode === "write-the-definition" && (
                 <>
                     <section className='study-view-header'>
@@ -196,6 +287,7 @@ function StudyView({ selectedDeck, setIsStudying })
                     {showResults && (
                         <>
                             <p className="card-counter">Score: {selectedDeck.cards.filter((card, index) => answers[index].trim().toLowerCase() === card.back.trim().toLowerCase()).length} / {answers.length}</p>
+
                             <div className='write-the-definition'>
                                 {selectedDeck.cards.map((card, index) => (
                                     <div key={index} className='write-the-definition-question'>

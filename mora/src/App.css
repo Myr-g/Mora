@@ -156,6 +156,45 @@
   gap: 0.75rem;
 }
 
+.matching {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+
+  padding: 2rem;
+  border: 1px solid white;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+  width: 75%;
+  margin: 0 auto;
+  margin-bottom: 1rem;
+}
+
+.matching-prompt {
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.matching-slot {
+  width: 30%;
+  border: 1px solid white;
+}
+
+.matching-slot.correct {
+  border: 1px solid lightgreen;
+}
+
+.matching-slot.incorrect {
+  border: 1px solid red;
+}
+
+.matching-correct-answer {
+  color: lightgreen;
+  font-size: 80%;
+}
+
 .write-the-definition {
   display: grid;
   grid-template-columns: 1fr 1fr;

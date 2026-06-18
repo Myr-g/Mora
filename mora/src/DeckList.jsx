@@ -28,7 +28,7 @@ function DeckList({decks, setDecks, selectedDeckId, setSelectedDeckId })
     return (
         <>
         <section className='header'>
-          <h1>Language Study Tool</h1>
+          <h1>Mora</h1>
         </section>
 
         <button className='create-deck' onClick={createDeck}>Create Deck</button>
