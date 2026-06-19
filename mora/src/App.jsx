@@ -51,7 +51,9 @@ function App()
 
   const selectedDeck = decks.find(d => d.id === selectedDeckId);
 
+  const [showStudyModal, setShowStudyModal] = useState(false);
   const [isStudying, setIsStudying] = useState(false);
+  const [studyMode, setStudyMode] = useState(null);
 
   useEffect(() => {
     if(selectedDeck)
@@ -75,13 +77,13 @@ function App()
   else if(selectedDeck && !isStudying)
   {
     return (
-      <DeckView decks={decks} setDecks={setDecks} selectedDeckId={selectedDeckId} setSelectedDeckId={setSelectedDeckId} selectedDeck={selectedDeck} setIsStudying={setIsStudying}/>
+      <DeckView decks={decks} setDecks={setDecks} selectedDeckId={selectedDeckId} setSelectedDeckId={setSelectedDeckId} selectedDeck={selectedDeck} showStudyModal = {showStudyModal} setShowStudyModal={setShowStudyModal} setIsStudying={setIsStudying} setStudyMode={setStudyMode}/>
     )
   }
 
   else if(selectedDeck && isStudying){
     return (
-      <StudyView selectedDeck={selectedDeck} setIsStudying={setIsStudying}/>
+      <StudyView selectedDeck={selectedDeck} setIsStudying={setIsStudying} studyMode={studyMode} setStudyMode={setStudyMode} showStudyModal = {showStudyModal} setShowStudyModal={setShowStudyModal}/>
     )
   }
 }

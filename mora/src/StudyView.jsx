@@ -1,11 +1,8 @@
 import { useState, useEffect } from 'react'
 import './App.css'
 
-function StudyView({ selectedDeck, setIsStudying })
+function StudyView({ selectedDeck, setIsStudying, studyMode, setStudyMode, showStudyModal, setShowStudyModal })
 {
-    const [studyMode, setStudyMode] = useState(null);
-    const [showStudyModal, setShowStudyModal] = useState(true);
-
     const [side, setSide] = useState("front");
     const [currentCardIndex, setCurrentCardIndex] = useState(0);
 
@@ -43,6 +40,11 @@ function StudyView({ selectedDeck, setIsStudying })
         setShowResults(false);
         setSelectedAnswer(null);
         setMatches([]);
+
+        if(studyMode === "matching")
+        {
+            shuffleAnswers();
+        }
     };
 
     // Flashcard Functions
@@ -146,7 +148,10 @@ function StudyView({ selectedDeck, setIsStudying })
                     <div className='flashcards'>
                         <button className='previous-card' onClick={previousCard}>←</button>
                     
-                        <div className='flashcard' onClick={flipCard}>{selectedDeck.cards[currentCardIndex][side]}</div>
+                        <div className='flashcard' onClick={flipCard}>
+                            <div className="flashcard-side">{side.toUpperCase()}</div>
+                            <h2>{selectedDeck.cards[currentCardIndex][side]}</h2>
+                        </div>
 
                         <button className='next-card' onClick={nextCard}>→</button>
                     </div>
@@ -159,10 +164,10 @@ function StudyView({ selectedDeck, setIsStudying })
                         <h1>{selectedDeck.name} - Multiple Choice</h1>
                     </section>
 
-                    <button className='study-button' onClick={() => setShowStudyModal(true)}>Study Options</button>
-
                     {currentCardIndex !== selectedDeck.cards.length && (
                         <>
+                            <button className='study-button' onClick={() => setShowStudyModal(true)}>Study Options</button>
+
                             <div className='multiple-choice'>
                                 <div className='multiple-choice-question'>
                                     <h2>{selectedDeck.cards[currentCardIndex].front}</h2>
@@ -181,7 +186,12 @@ function StudyView({ selectedDeck, setIsStudying })
 
                     {currentCardIndex === selectedDeck.cards.length && (
                         <>
-                            <p className="card-counter">Score: {answers.filter(a => a.selected === a.correct).length} / {answers.length}</p>
+                            <div className='deck-actions'>
+                                <button className="try-again-button" onClick={resetStudyState}>Try Again</button>
+                                <button className='study-button' onClick={() => setShowStudyModal(true)}>Study Options</button>
+                            </div>
+
+                            <p className="score">Score: {answers.filter(a => a.selected === a.correct).length} / {answers.length}</p>
 
                             {answers.map((answer, index) => (
                                 <div key={index} className={`multiple-choice ${answer.selected === answer.correct ? "correct" : "incorrect"}`}>
@@ -190,8 +200,8 @@ function StudyView({ selectedDeck, setIsStudying })
                                     </div>
 
                                     <div className='multiple-choice-answers'>
-                                        <p>Your Answer: {answer.selected}</p>
-                                        <p>Correct Answer: {answer.correct}</p>
+                                        <p className='result-label'>Your Answer:</p><p>{answer.selected}</p>
+                                        <p className='result-label'>Correct Answer:</p><p>{answer.correct}</p>
                                     </div>
                                 </div>
                             ))}
@@ -206,10 +216,10 @@ function StudyView({ selectedDeck, setIsStudying })
                         <h1>{selectedDeck.name} - Matching</h1>
                     </section>
 
-                    <button className='study-button' onClick={() => setShowStudyModal(true)}>Study Options</button>
-
                     {!showResults && (
                         <>
+                            <button className='study-button' onClick={() => setShowStudyModal(true)}>Study Options</button>
+
                             <div className='matching'>
                                 <div className='matching-questions'>
                                     {selectedDeck.cards.map((card, index) => (
@@ -222,7 +232,7 @@ function StudyView({ selectedDeck, setIsStudying })
 
                                 <div className='matching-answers'>
                                     {answers.filter(answer => !matches.includes(answer)).map(answer => (
-                                        <div key={answer} className='matching-question' onClick={() => setSelectedAnswer(answer)}>{answer}</div>
+                                        <div key={answer} className={selectedAnswer === answer ? "matching-answer selected" : "matching-answer"} onClick={() => setSelectedAnswer(answer)}>{answer}</div>
                                     ))}
                                 </div>
                             </div>
@@ -233,7 +243,12 @@ function StudyView({ selectedDeck, setIsStudying })
 
                     {showResults && (
                         <>
-                            <p className="card-counter">Score: {selectedDeck.cards.filter((card, index) => (matches[index] || "").trim().toLowerCase() === card.back.trim().toLowerCase()).length} / {selectedDeck.cards.length}</p>
+                            <div className='deck-actions'>
+                                <button className="try-again-button" onClick={resetStudyState}>Try Again</button>
+                                <button className='study-button' onClick={() => setShowStudyModal(true)}>Study Options</button>
+                            </div>
+
+                            <p className="score">Score: {selectedDeck.cards.filter((card, index) => (matches[index] || "").trim().toLowerCase() === card.back.trim().toLowerCase()).length} / {selectedDeck.cards.length}</p>
 
                             <div className='matching'>
                                 <div className='matching-questions'>
@@ -252,7 +267,7 @@ function StudyView({ selectedDeck, setIsStudying })
 
                                 <div className='matching-answers'>
                                     {answers.filter(answer => !matches.includes(answer)).map(answer => (
-                                        <div key={answer} className='matching-question'>{answer}</div>
+                                        <div key={answer} className='matching-answer'>{answer}</div>
                                     ))}
                                 </div>
                             </div>
@@ -267,10 +282,10 @@ function StudyView({ selectedDeck, setIsStudying })
                         <h1>{selectedDeck.name} - Write the Definition</h1>
                     </section>
 
-                    <button className='study-button' onClick={() => setShowStudyModal(true)}>Study Options</button>
-
                     {!showResults && (
                         <>
+                            <button className='study-button' onClick={() => setShowStudyModal(true)}>Study Options</button>
+                            
                             <div className='write-the-definition'>
                                 {selectedDeck.cards.map((card, index) => (
                                     <div key={index} className='write-the-definition-question'>
@@ -286,12 +301,17 @@ function StudyView({ selectedDeck, setIsStudying })
 
                     {showResults && (
                         <>
-                            <p className="card-counter">Score: {selectedDeck.cards.filter((card, index) => answers[index].trim().toLowerCase() === card.back.trim().toLowerCase()).length} / {answers.length}</p>
+                            <div className='deck-actions'>
+                                <button className="try-again-button" onClick={resetStudyState}>Try Again</button>
+                                <button className='study-button' onClick={() => setShowStudyModal(true)}>Study Options</button>
+                            </div>
+
+                            <p className="score">Score: {selectedDeck.cards.filter((card, index) => answers[index].trim().toLowerCase() === card.back.trim().toLowerCase()).length} / {answers.length}</p>
 
                             <div className='write-the-definition'>
                                 {selectedDeck.cards.map((card, index) => (
-                                    <div key={index} className='write-the-definition-question'>
-                                        <p>{card.front}</p>
+                                    <div key={index} className='write-the-definition-prompt'>
+                                        <p className='write-the-definition-question'>{card.front}</p>
                                         <input className={`write-the-definition-answer ${answers[index].trim().toLowerCase() === card.back.trim().toLowerCase() ? "correct" : "incorrect"}`} value={answers[index] || ""} readOnly></input>
 
                                         {answers[index].trim().toLowerCase() !== card.back.trim().toLowerCase() && (
@@ -327,8 +347,8 @@ function StudyView({ selectedDeck, setIsStudying })
                             </div>
 
                             <div className='study-modal-actions'>
-                                <button onClick={() => setIsStudying(false)}>Exit</button>
-                                <button onClick={() => {setShowStudyModal(false); if(!studyMode) { setIsStudying(false); }}}>Cancel</button>
+                                <button onClick={() => {setShowStudyModal(false); setIsStudying(false); setStudyMode(null);}}>Back to Deck</button>
+                                <button onClick={() => setShowStudyModal(false)}>Cancel</button>
                             </div>
                         </div>
                     </div>
