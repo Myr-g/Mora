@@ -3,6 +3,7 @@ import './App.css'
 
 function StudyView({ selectedDeck, setIsStudying, studyMode, setStudyMode, showStudyModal, setShowStudyModal })
 {
+    const [studyCards, setStudyCards] = useState(selectedDeck.cards);
     const [side, setSide] = useState("front");
     const [currentCardIndex, setCurrentCardIndex] = useState(0);
     const [answers, setAnswers] = useState([]); 
@@ -10,7 +11,7 @@ function StudyView({ selectedDeck, setIsStudying, studyMode, setStudyMode, showS
     const [choices, setChoices] = useState([]);
 
     useEffect(() => {
-        if(studyMode === "multiple-choice" && currentCardIndex < selectedDeck.cards.length)
+        if(studyMode === "multiple-choice" && currentCardIndex < studyCards.length)
         {
             setChoices(generateChoices());
         }
@@ -23,14 +24,12 @@ function StudyView({ selectedDeck, setIsStudying, studyMode, setStudyMode, showS
         {
             shuffleAnswers();
         }
-    }, [studyMode, showResults]);
 
-    useEffect(() => {
-        if(studyMode === "write-the-definition")
+        if(studyMode === "write-the-definition" && !showResults) 
         {
-            setAnswers(Array(selectedDeck.cards.length).fill(""));
+            setAnswers(Array(studyCards.length).fill(""));
         }
-    }, [studyMode]);
+    }, [studyMode, showResults]);
 
     // Reset State
     const resetStudyState = () => {
@@ -50,7 +49,7 @@ function StudyView({ selectedDeck, setIsStudying, studyMode, setStudyMode, showS
     };
 
     const nextCard = () => {
-        setCurrentCardIndex(i => i < selectedDeck.cards.length - 1 ? i + 1 : i);
+        setCurrentCardIndex(i => i < studyCards.length - 1 ? i + 1 : i);
         setSide("front");
     };
 
@@ -60,9 +59,9 @@ function StudyView({ selectedDeck, setIsStudying, studyMode, setStudyMode, showS
 
     // Multiple Choice Functions
     const generateChoices = () => {
-        const correctAnswer = selectedDeck.cards[currentCardIndex].back;
+        const correctAnswer = studyCards[currentCardIndex].back;
 
-        let incorrectAnswers = shuffle(selectedDeck.cards.filter((_, i) => i !== currentCardIndex));
+        let incorrectAnswers = shuffle(studyCards.filter((_, i) => i !== currentCardIndex));
         incorrectAnswers = incorrectAnswers.slice(0, 3).map(card => card.back);
 
         const choices = shuffle([correctAnswer, ...incorrectAnswers]);
@@ -83,12 +82,12 @@ function StudyView({ selectedDeck, setIsStudying, studyMode, setStudyMode, showS
     }
 
     const handleChoice = (choice) => {
-        const correctAnswer = selectedDeck.cards[currentCardIndex].back;
+        const correctAnswer = studyCards[currentCardIndex].back;
 
         setAnswers(answers => [
             ...answers, {
                 index: currentCardIndex,
-                question: selectedDeck.cards[currentCardIndex].front,
+                question: studyCards[currentCardIndex].front,
                 selected: choice,
                 correct: correctAnswer
             }
@@ -102,7 +101,7 @@ function StudyView({ selectedDeck, setIsStudying, studyMode, setStudyMode, showS
     const [matches, setMatches] = useState([]);
 
     const shuffleAnswers = () => {
-        const answers = selectedDeck.cards.map(card => card.back);
+        const answers = studyCards.map(card => card.back);
         const shuffled_answers = shuffle(answers);
         setAnswers(shuffled_answers);
     };
@@ -139,7 +138,7 @@ function StudyView({ selectedDeck, setIsStudying, studyMode, setStudyMode, showS
 
                     <button className='study-button' onClick={() => setShowStudyModal(true)}>Study Options</button>
 
-                    <p className="card-counter">Card {currentCardIndex + 1} of {selectedDeck.cards.length}</p>
+                    <p className="card-counter">Card {currentCardIndex + 1} of {studyCards.length}</p>
 
                     <div className='flashcards'>
                         <button className='previous-card' onClick={previousCard}>
@@ -151,7 +150,7 @@ function StudyView({ selectedDeck, setIsStudying, studyMode, setStudyMode, showS
                     
                         <div className='flashcard' onClick={flipCard}>
                             <div className="flashcard-side">{side.toUpperCase()}</div>
-                            <h2>{selectedDeck.cards[currentCardIndex][side]}</h2>
+                            <h2>{studyCards[currentCardIndex][side]}</h2>
                         </div>
 
                         <button className='next-card' onClick={nextCard}>
@@ -170,13 +169,13 @@ function StudyView({ selectedDeck, setIsStudying, studyMode, setStudyMode, showS
                         <h1>{selectedDeck.name} - Multiple Choice</h1>
                     </section>
 
-                    {currentCardIndex !== selectedDeck.cards.length && (
+                    {currentCardIndex !== studyCards.length && (
                         <>
                             <button className='study-button' onClick={() => setShowStudyModal(true)}>Study Options</button>
 
                             <div className='multiple-choice'>
                                 <div className='multiple-choice-question'>
-                                    <h2>{selectedDeck.cards[currentCardIndex].front}</h2>
+                                    <h2>{studyCards[currentCardIndex].front}</h2>
                                 </div>
 
                                 <div className='multiple-choice-answers'>
@@ -190,10 +189,20 @@ function StudyView({ selectedDeck, setIsStudying, studyMode, setStudyMode, showS
                         </>
                     )}
 
-                    {currentCardIndex === selectedDeck.cards.length && (
+                    {currentCardIndex === studyCards.length && (
                         <>
                             <div className='deck-actions'>
                                 <button className="try-again-button" onClick={resetStudyState}>Try Again</button>
+                                
+                                {answers.some(a => a.selected !== a.correct) && (
+                                    <button className='study-missed-cards-button' onClick={() => {
+                                        const missedCards = answers.filter(answer => answer.selected !== answer.correct).map(answer => studyCards[answer.index]);
+                                        setStudyCards(missedCards);
+                                        resetStudyState();
+                                        setStudyMode("flashcards");
+                                    }}>Review Missed Cards</button>
+                                )}
+
                                 <button className='study-button' onClick={() => setShowStudyModal(true)}>Study Options</button>
                             </div>
 
@@ -224,11 +233,14 @@ function StudyView({ selectedDeck, setIsStudying, studyMode, setStudyMode, showS
 
                     {!showResults && (
                         <>
-                            <button className='study-button' onClick={() => setShowStudyModal(true)}>Study Options</button>
+                            <div className='deck-actions'>
+                                <button className='check-answers-button' onClick={() => setShowResults(true)}>Check Answers</button>
+                                <button className='study-button' onClick={() => setShowStudyModal(true)}>Study Options</button>
+                            </div>
 
                             <div className='matching'>
                                 <div className='matching-questions'>
-                                    {selectedDeck.cards.map((card, index) => (
+                                    {studyCards.map((card, index) => (
                                         <div key={index} className='matching-prompt'>
                                             <div className='matching-question'>{card.front}</div>
                                             <div className='matching-slot' onClick={() => handleMatch(index)}>{matches[index] || ""}</div>
@@ -242,8 +254,6 @@ function StudyView({ selectedDeck, setIsStudying, studyMode, setStudyMode, showS
                                     ))}
                                 </div>
                             </div>
-
-                            <button className='check-answers-button' onClick={() => setShowResults(true)}>Check Answers</button>
                         </>
                     )}
 
@@ -251,14 +261,24 @@ function StudyView({ selectedDeck, setIsStudying, studyMode, setStudyMode, showS
                         <>
                             <div className='deck-actions'>
                                 <button className="try-again-button" onClick={resetStudyState}>Try Again</button>
+
+                                {studyCards.some((card, index) => (matches[index] || "").trim().toLowerCase() !== card.back.trim().toLowerCase()) && (
+                                    <button className='study-missed-cards-button' onClick={() => {
+                                        const missedCards = studyCards.filter((card, index) => (matches[index] || "").trim().toLowerCase() !== card.back.trim().toLowerCase());
+                                        setStudyCards(missedCards);
+                                        resetStudyState();
+                                        setStudyMode("flashcards");
+                                    }}>Review Missed Cards</button>
+                                )}
+
                                 <button className='study-button' onClick={() => setShowStudyModal(true)}>Study Options</button>
                             </div>
 
-                            <p className="score">Score: {selectedDeck.cards.filter((card, index) => (matches[index] || "").trim().toLowerCase() === card.back.trim().toLowerCase()).length} / {selectedDeck.cards.length}</p>
+                            <p className="score">Score: {studyCards.filter((card, index) => (matches[index] || "").trim().toLowerCase() === card.back.trim().toLowerCase()).length} / {studyCards.length}</p>
 
                             <div className='matching'>
                                 <div className='matching-questions'>
-                                    {selectedDeck.cards.map((card, index) => (
+                                    {studyCards.map((card, index) => (
                                         <div key={index} className='matching-prompt'>
                                             <div className='matching-question'>{card.front}</div>
                                             <div className={`matching-slot ${(matches[index] || "").trim().toLowerCase() === card.back.trim().toLowerCase() ? "correct" : "incorrect"}`}>{matches[index] || ""}</div>
@@ -290,18 +310,19 @@ function StudyView({ selectedDeck, setIsStudying, studyMode, setStudyMode, showS
 
                     {!showResults && (
                         <>
-                            <button className='study-button' onClick={() => setShowStudyModal(true)}>Study Options</button>
+                            <div className='deck-actions'>
+                                <button className='check-answers-button' onClick={() => setShowResults(true)}>Check Answers</button>
+                                <button className='study-button' onClick={() => setShowStudyModal(true)}>Study Options</button>
+                            </div>
                             
                             <div className='write-the-definition'>
-                                {selectedDeck.cards.map((card, index) => (
+                                {studyCards.map((card, index) => (
                                     <div key={index} className='write-the-definition-question'>
                                         <p>{card.front}</p>
                                         <input className='write-the-definition-answer' value={answers[index] || ""} onChange={(e) => { handleDefinition(e.target.value, index); }}></input>
                                     </div>
                                  ))}
                             </div>
-
-                            <button className='check-answers-button' onClick={() => setShowResults(true)}>Check Answers</button>
                         </>
                     )}
 
@@ -309,13 +330,23 @@ function StudyView({ selectedDeck, setIsStudying, studyMode, setStudyMode, showS
                         <>
                             <div className='deck-actions'>
                                 <button className="try-again-button" onClick={resetStudyState}>Try Again</button>
+
+                                {studyCards.some((card, index) => answers[index].trim().toLowerCase() !== card.back.trim().toLowerCase()) && (
+                                    <button className='study-missed-cards-button' onClick={() => {
+                                        const missedCards = studyCards.filter((card, index) => answers[index].trim().toLowerCase() !== card.back.trim().toLowerCase());
+                                        setStudyCards(missedCards);
+                                        resetStudyState();
+                                        setStudyMode("flashcards");
+                                    }}>Review Missed Cards</button>
+                                )}
+
                                 <button className='study-button' onClick={() => setShowStudyModal(true)}>Study Options</button>
                             </div>
 
-                            <p className="score">Score: {selectedDeck.cards.filter((card, index) => answers[index].trim().toLowerCase() === card.back.trim().toLowerCase()).length} / {answers.length}</p>
+                            <p className="score">Score: {studyCards.filter((card, index) => answers[index].trim().toLowerCase() === card.back.trim().toLowerCase()).length} / {answers.length}</p>
 
                             <div className='write-the-definition'>
-                                {selectedDeck.cards.map((card, index) => (
+                                {studyCards.map((card, index) => (
                                     <div key={index} className='write-the-definition-prompt'>
                                         <p className='write-the-definition-question'>{card.front}</p>
                                         <input className={`write-the-definition-answer ${answers[index].trim().toLowerCase() === card.back.trim().toLowerCase() ? "correct" : "incorrect"}`} value={answers[index] || ""} readOnly></input>
@@ -343,7 +374,7 @@ function StudyView({ selectedDeck, setIsStudying, studyMode, setStudyMode, showS
 
                             <div className='study-modal-options'>
                                 <label>Study Mode</label>
-                                <select className="study-modal-select" onChange={(e) => {if(e.target.value) { resetStudyState(); setStudyMode(e.target.value); setShowStudyModal(false); }}} defaultValue={studyMode}>
+                                <select className="study-modal-select" onChange={(e) => {if(e.target.value) { resetStudyState(); setStudyCards(selectedDeck.cards); setStudyMode(e.target.value); setShowStudyModal(false); }}} defaultValue={studyMode}>
                                     <option value="">Select a Study Mode</option>
                                     <option value="flashcards">Flashcards</option>
                                     <option value="multiple-choice">Multiple Choice</option>
