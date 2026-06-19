@@ -154,6 +154,7 @@ body {
   margin: 0;
   padding: 0.5rem;
   background: transparent;
+  border-radius: var(--radius-md);
 
   display: flex;
   align-items: center;
@@ -247,7 +248,7 @@ body {
   flex-direction: row;
   justify-content: center;
   gap: 2rem;
-  margin-bottom: 2rem;
+  margin-bottom: 1rem;
 }
 
 .create-card {
@@ -301,6 +302,38 @@ body {
 .study-button:disabled {
   opacity: 0.5;
   cursor: not-allowed;
+}
+
+.card-search {
+  width: 100%;
+  max-width: 500px;
+
+  display: block;
+  margin: 0 auto;
+  margin-bottom: 1rem;
+  padding: 0.9rem 1rem;
+
+  background: var(--bg-paper);
+  color: var(--text-main);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  box-shadow: 0 2px 8px var(--shadow);
+  outline: none;
+
+  font-size: 1rem;
+
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.card-search:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px rgba(102, 117, 134, 0.15);
+}
+
+.empty-search {
+  margin-top: 3rem;
+  color: var(--text-muted);
+  font-style: italic;
 }
 
 .card-list {
@@ -369,6 +402,9 @@ body {
   flex: 1;
   margin: 0;
   padding: 0.5rem;
+
+  background: transparent;
+  border-radius: var(--radius-md);
 
   display: flex;
   align-items: center;

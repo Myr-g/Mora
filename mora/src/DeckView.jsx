@@ -5,6 +5,7 @@ function DeckView({ decks, setDecks, selectedDeckId, setSelectedDeckId, selected
 {
   const [editingId, setEditingId] = useState(null);
   const [sideByCardId, setSideByCardId] = useState({});
+  const [search, setSearch] = useState("");
 
   const createCard = () => {
     const card = {
@@ -63,14 +64,19 @@ function DeckView({ decks, setDecks, selectedDeckId, setSelectedDeckId, selected
       );
     };
 
+    const filteredCards = selectedDeck.cards.filter(card => 
+      card.front.toLowerCase().includes(search.toLowerCase()) ||
+      card.back.toLowerCase().includes(search.toLowerCase())
+    );
+
     return (
       <>
         <section className='deck-header'>
           <button className='back-button' onClick={() => setSelectedDeckId(null)}>
             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24">
-                <path d="M0 0h24v24H0z" fill="none" />
-	              <path fill="currentColor" d="M16.62 2.99a1.25 1.25 0 0 0-1.77 0L6.54 11.3a.996.996 0 0 0 0 1.41l8.31 8.31c.49.49 1.28.49 1.77 0s.49-1.28 0-1.77L9.38 12l7.25-7.25c.48-.48.48-1.28-.01-1.76" />
-              </svg>
+              <path d="M0 0h24v24H0z" fill="none" />
+	            <path fill="currentColor" d="M16.62 2.99a1.25 1.25 0 0 0-1.77 0L6.54 11.3a.996.996 0 0 0 0 1.41l8.31 8.31c.49.49 1.28.49 1.77 0s.49-1.28 0-1.77L9.38 12l7.25-7.25c.48-.48.48-1.28-.01-1.76" />
+            </svg>
           </button>
           <h1 className='deck-name'>{selectedDeck.name}</h1>
         </section>
@@ -82,8 +88,16 @@ function DeckView({ decks, setDecks, selectedDeckId, setSelectedDeckId, selected
           <button className='study-button' onClick={() => setShowStudyModal(true)} disabled={selectedDeck.cards.length === 0}>Study</button>
         </div>
 
+        <div className='card-search-container'>
+          <input className="card-search" placeholder="Search cards..." value={search} onChange={e => setSearch(e.target.value)}/>
+
+          {filteredCards.length === 0 && (
+            <p className="empty-search">No cards found.</p>
+          )}
+        </div>
+
         <div className='card-list'>
-          {selectedDeck.cards.map((card) => {
+          {filteredCards.map((card) => {
             const side = sideByCardId[card.id] || "front";
 
             return (

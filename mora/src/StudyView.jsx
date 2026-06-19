@@ -5,6 +5,7 @@ function StudyView({ selectedDeck, setIsStudying, studyMode, setStudyMode, showS
 {
     const [side, setSide] = useState("front");
     const [currentCardIndex, setCurrentCardIndex] = useState(0);
+    const [answers, setAnswers] = useState([]); 
 
     const [choices, setChoices] = useState([]);
 
@@ -15,21 +16,21 @@ function StudyView({ selectedDeck, setIsStudying, studyMode, setStudyMode, showS
         }
     }, [currentCardIndex, studyMode]);
 
-    const [answers, setAnswers] = useState([]); 
+    const [showResults, setShowResults] = useState(false);
+
+    useEffect(() => {
+        if (studyMode === "matching" && !showResults)
+        {
+            shuffleAnswers();
+        }
+    }, [studyMode, showResults]);
 
     useEffect(() => {
         if(studyMode === "write-the-definition")
         {
             setAnswers(Array(selectedDeck.cards.length).fill(""));
         }
-
-        if(studyMode === "matching")
-        {
-            shuffleAnswers();
-        }
     }, [studyMode]);
-
-    const [showResults, setShowResults] = useState(false);
 
     // Reset State
     const resetStudyState = () => {
@@ -40,11 +41,6 @@ function StudyView({ selectedDeck, setIsStudying, studyMode, setStudyMode, showS
         setShowResults(false);
         setSelectedAnswer(null);
         setMatches([]);
-
-        if(studyMode === "matching")
-        {
-            shuffleAnswers();
-        }
     };
 
     // Flashcard Functions
@@ -146,14 +142,24 @@ function StudyView({ selectedDeck, setIsStudying, studyMode, setStudyMode, showS
                     <p className="card-counter">Card {currentCardIndex + 1} of {selectedDeck.cards.length}</p>
 
                     <div className='flashcards'>
-                        <button className='previous-card' onClick={previousCard}>←</button>
+                        <button className='previous-card' onClick={previousCard}>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                                <path d="M0 0h24v24H0z" fill="none" />
+	                            <path fill="currentColor" d="M16.62 2.99a1.25 1.25 0 0 0-1.77 0L6.54 11.3a.996.996 0 0 0 0 1.41l8.31 8.31c.49.49 1.28.49 1.77 0s.49-1.28 0-1.77L9.38 12l7.25-7.25c.48-.48.48-1.28-.01-1.76" />
+                            </svg>
+                        </button>
                     
                         <div className='flashcard' onClick={flipCard}>
                             <div className="flashcard-side">{side.toUpperCase()}</div>
                             <h2>{selectedDeck.cards[currentCardIndex][side]}</h2>
                         </div>
 
-                        <button className='next-card' onClick={nextCard}>→</button>
+                        <button className='next-card' onClick={nextCard}>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                                <path d="M0 0h24v24H0z" fill="none" />
+                                <path fill="currentColor" d="m14.475 12l-7.35-7.35q-.375-.375-.363-.888t.388-.887t.888-.375t.887.375l7.675 7.7q.3.3.45.675t.15.75t-.15.75t-.45.675l-7.7 7.7q-.375.375-.875.363T7.15 21.1t-.375-.888t.375-.887z" />
+                            </svg>
+                        </button>
                     </div>
                 </>
             )}
