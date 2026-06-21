@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { userRef, useState, useEffect } from 'react'
 import './App.css'
 
 function Flashcards({ setDecks, selectedDeck, studyCards, setStudyCards, currentCardIndex, setCurrentCardIndex, answers, setAnswers, showResults, setShowResults, setShowStudyModal, studyMode, setStudyMode, resetStudyState })
@@ -106,6 +106,38 @@ function Flashcards({ setDecks, selectedDeck, studyCards, setStudyCards, current
         updateCardSrs(card.id, card.srs);
     }
 
+    const againTransition = autoHeightAdjust(expanded["again"], [againCards]);
+    const hardTransition = autoHeightAdjust(expanded["hard"], [hardCards]);
+    const goodTransition = autoHeightAdjust(expanded["good"], [goodCards]);
+    const easyTransition = autoHeightAdjust(expanded["easy"], [easyCards]);
+
+    function autoHeightAdjust(isExpanded, deps = []) {
+        const ref = useRef(null);
+        const [height, setHeight] = useState("0px");
+        
+        useEffect(() => {
+            const el = ref.current;
+
+            if(!el)
+            { 
+                return; 
+            }
+
+            if(isExpanded)
+            {
+                const fullHeight = el.scrollHeight;
+                setHeight(fullHeight + "px");
+            } 
+            
+            else 
+            {
+                setHeight("0px");
+            }
+        }, [isExpanded, ...deps]);
+
+        return { ref, height };
+    }
+
     const updateCardSrs = (cardId, newCardSrs) => {
         setDecks(decks =>
             decks.map(deck => ({
@@ -196,7 +228,7 @@ function Flashcards({ setDecks, selectedDeck, studyCards, setStudyCards, current
                             </svg>
                         </div>
 
-                        <div className={`flashcard-results-cards ${expanded["again"] ? "expanded" : ""}`}>
+                        <div className={`flashcard-results-cards ${expanded["again"] ? "expanded" : ""}`} ref={againTransition.ref} style={{ height: againTransition.height }}>
                             {againCards.map((answer, index) => (
                                 <div key={index} className="flashcard-results-card">
                                     <h3>{answer.card.front}</h3>
@@ -216,7 +248,7 @@ function Flashcards({ setDecks, selectedDeck, studyCards, setStudyCards, current
                             </svg>
                         </div>
 
-                        <div className={`flashcard-results-cards ${expanded["hard"] ? "expanded" : ""}`}>
+                        <div className={`flashcard-results-cards ${expanded["hard"] ? "expanded" : ""}`} ref={hardTransition.ref} style={{ height: hardTransition.height }}>
                             {hardCards.map((answer, index) => (
                                 <div key={index} className="flashcard-results-card">
                                     <h3>{answer.card.front}</h3>
@@ -236,7 +268,7 @@ function Flashcards({ setDecks, selectedDeck, studyCards, setStudyCards, current
                             </svg>
                         </div>
 
-                        <div className={`flashcard-results-cards ${expanded["good"] ? "expanded" : ""}`}>
+                        <div className={`flashcard-results-cards ${expanded["good"] ? "expanded" : ""}`} ref={goodTransition.ref} style={{ height: goodTransition.height }}>
                             {goodCards.map((answer, index) => (
                                 <div key={index} className="flashcard-results-card">
                                     <h3>{answer.card.front}</h3>
@@ -256,7 +288,7 @@ function Flashcards({ setDecks, selectedDeck, studyCards, setStudyCards, current
                             </svg>
                         </div>
 
-                        <div className={`flashcard-results-cards ${expanded["easy"] ? "expanded" : ""}`}>
+                        <div className={`flashcard-results-cards ${expanded["easy"] ? "expanded" : ""}`} ref={easyTransition.ref} style={{ height: easyTransition.height }}>
                             {easyCards.map((answer, index) => (
                                 <div key={index} className="flashcard-results-card">
                                     <h3>{answer.card.front}</h3>
