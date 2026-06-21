@@ -1,4 +1,4 @@
-import { userRef, useState, useEffect } from 'react'
+import { useRef, useState, useEffect } from 'react'
 import './App.css'
 
 function Flashcards({ setDecks, selectedDeck, studyCards, setStudyCards, currentCardIndex, setCurrentCardIndex, answers, setAnswers, showResults, setShowResults, setShowStudyModal, studyMode, setStudyMode, resetStudyState })
@@ -106,10 +106,31 @@ function Flashcards({ setDecks, selectedDeck, studyCards, setStudyCards, current
         updateCardSrs(card.id, card.srs);
     }
 
-    const againTransition = autoHeightAdjust(expanded["again"], [againCards]);
-    const hardTransition = autoHeightAdjust(expanded["hard"], [hardCards]);
-    const goodTransition = autoHeightAdjust(expanded["good"], [goodCards]);
-    const easyTransition = autoHeightAdjust(expanded["easy"], [easyCards]);
+    const updateCardSrs = (cardId, newCardSrs) => {
+        setDecks(decks =>
+            decks.map(deck => ({
+                ...deck, cards: deck.cards.map(card =>
+                    card.id === cardId ? { ...card, srs: newCardSrs }: card
+                )
+            }))
+        );
+    }
+
+    const [expanded, setExpanded] = useState({
+        again: false,
+        hard: false,
+        good: false,
+        easy: false
+    });
+
+    const toggleExpanded = (key) => {
+        setExpanded(expanded => ({...expanded, [key]: !expanded[key]}));
+    };
+
+    const { ref: againRef, height: againHeight } = autoHeightAdjust(expanded["again"], [againCards]);
+    const { ref: hardRef, height: hardHeight } = autoHeightAdjust(expanded["hard"], [hardCards]);
+    const { ref: goodRef, height: goodHeight } = autoHeightAdjust(expanded["good"], [goodCards]);
+    const { ref: easyRef, height: easyHeight } = autoHeightAdjust(expanded["easy"], [easyCards]);
 
     function autoHeightAdjust(isExpanded, deps = []) {
         const ref = useRef(null);
@@ -137,27 +158,6 @@ function Flashcards({ setDecks, selectedDeck, studyCards, setStudyCards, current
 
         return { ref, height };
     }
-
-    const updateCardSrs = (cardId, newCardSrs) => {
-        setDecks(decks =>
-            decks.map(deck => ({
-                ...deck, cards: deck.cards.map(card =>
-                    card.id === cardId ? { ...card, srs: newCardSrs }: card
-                )
-            }))
-        );
-    }
-
-    const [expanded, setExpanded] = useState({
-        again: false,
-        hard: false,
-        good: false,
-        easy: false
-    });
-
-    const toggleExpanded = (key) => {
-        setExpanded(expanded => ({...expanded, [key]: !expanded[key]}));
-    };
 
     return (
         <>
@@ -228,7 +228,7 @@ function Flashcards({ setDecks, selectedDeck, studyCards, setStudyCards, current
                             </svg>
                         </div>
 
-                        <div className={`flashcard-results-cards ${expanded["again"] ? "expanded" : ""}`} ref={againTransition.ref} style={{ height: againTransition.height }}>
+                        <div className={`flashcard-results-cards ${expanded["again"] ? "expanded" : ""}`} ref={againRef} style={{height: againHeight}}>
                             {againCards.map((answer, index) => (
                                 <div key={index} className="flashcard-results-card">
                                     <h3>{answer.card.front}</h3>
@@ -248,7 +248,7 @@ function Flashcards({ setDecks, selectedDeck, studyCards, setStudyCards, current
                             </svg>
                         </div>
 
-                        <div className={`flashcard-results-cards ${expanded["hard"] ? "expanded" : ""}`} ref={hardTransition.ref} style={{ height: hardTransition.height }}>
+                        <div className={`flashcard-results-cards ${expanded["hard"] ? "expanded" : ""}`} ref={hardRef} style={{height: hardHeight}}>
                             {hardCards.map((answer, index) => (
                                 <div key={index} className="flashcard-results-card">
                                     <h3>{answer.card.front}</h3>
@@ -268,7 +268,7 @@ function Flashcards({ setDecks, selectedDeck, studyCards, setStudyCards, current
                             </svg>
                         </div>
 
-                        <div className={`flashcard-results-cards ${expanded["good"] ? "expanded" : ""}`} ref={goodTransition.ref} style={{ height: goodTransition.height }}>
+                        <div className={`flashcard-results-cards ${expanded["good"] ? "expanded" : ""}`} ref={goodRef} style={{height: goodHeight}}>
                             {goodCards.map((answer, index) => (
                                 <div key={index} className="flashcard-results-card">
                                     <h3>{answer.card.front}</h3>
@@ -288,7 +288,7 @@ function Flashcards({ setDecks, selectedDeck, studyCards, setStudyCards, current
                             </svg>
                         </div>
 
-                        <div className={`flashcard-results-cards ${expanded["easy"] ? "expanded" : ""}`} ref={easyTransition.ref} style={{ height: easyTransition.height }}>
+                        <div className={`flashcard-results-cards ${expanded["easy"] ? "expanded" : ""}`} ref={easyRef} style={{height: easyHeight}}>
                             {easyCards.map((answer, index) => (
                                 <div key={index} className="flashcard-results-card">
                                     <h3>{answer.card.front}</h3>

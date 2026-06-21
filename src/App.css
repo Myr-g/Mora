@@ -672,6 +672,11 @@ body {
   font-size: 1rem;
 }
 
+.study-modal-reverse {
+  display: flex;
+  justify-content: center;
+}
+
 .study-modal-actions {
   display: flex;
   justify-content: flex-end;
