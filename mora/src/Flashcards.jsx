@@ -14,6 +14,11 @@ function Flashcards({ selectedDeck, studyCards, setStudyCards, currentCardIndex,
         setSide(side => (side === "front" ? "back" : "front"));
     };
 
+    const againCards = answers.filter(a => a.rating === "again");
+    const hardCards = answers.filter(a => a.rating === "hard");
+    const goodCards = answers.filter(a => a.rating === "good");
+    const easyCards = answers.filter(a => a.rating === "easy");
+
     const gradeCard = (rating) => {
         setAnswers(answers => [
             ...answers,
@@ -33,6 +38,17 @@ function Flashcards({ selectedDeck, studyCards, setStudyCards, currentCardIndex,
         {
             setShowResults(true);
         }
+    };
+
+    const [expanded, setExpanded] = useState({
+        again: false,
+        hard: false,
+        good: false,
+        easy: false
+    });
+
+    const toggleExpanded = (key) => {
+        setExpanded(expanded => ({...expanded, [key]: !expanded[key]}));
     };
 
     return (
@@ -68,9 +84,10 @@ function Flashcards({ selectedDeck, studyCards, setStudyCards, currentCardIndex,
                     <div className='deck-actions'>
                         <button className="try-again-button" onClick={resetFlashcardsState}>Try Again</button>
 
-                        {(answers.filter(a => a.rating === "again").length > 0)  && (
+
+                        {(againCards.length > 0 || hardCards.length > 0)  && (
                             <button className='study-missed-cards-button' onClick={() => {
-                                const missedCards = answers.filter(answer => answer.rating === "again").map(answer => answer.card);
+                                const missedCards = answers.filter(answer => answer.rating === "again" || answer.rating === "hard").map(answer => answer.card);
 
                                 setStudyCards(missedCards);
                                 resetFlashcardsState();
@@ -81,14 +98,83 @@ function Flashcards({ selectedDeck, studyCards, setStudyCards, currentCardIndex,
                         <button className='study-button' onClick={() => setShowStudyModal(true)}>Study Options</button>
                     </div>
 
-                    <div className='flashcard'>
-                        <h2>Didn't Know: {answers.filter(a => a.rating === "again").length}</h2>
-                        <h2>Hard: {answers.filter(a => a.rating === "hard").length}</h2>
-                        <h2>Knew It: {answers.filter(a => a.rating === "good").length}</h2>
-                        <h2>Easy: {answers.filter(a => a.rating === "easy").length}</h2>
+                    <p className='score'>Total Cards: {answers.length}</p>
 
+                    <div className='flashcard-results again' onClick={() => toggleExpanded("again")}>
+                        <div className={`flashcard-results-header ${expanded["again"] ? "expanded" : ""}`}>
+                            <h2>Didn't Know ({againCards.length})</h2>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                                <path d="M0 0h24v24H0z" fill="none" />
+                                <path fill="currentColor" d="M15.88 9.29L12 13.17L8.12 9.29a.996.996 0 1 0-1.41 1.41l4.59 4.59c.39.39 1.02.39 1.41 0l4.59-4.59a.996.996 0 0 0 0-1.41c-.39-.38-1.03-.39-1.42 0" />
+                            </svg>
+                        </div>
+
+                        <div className={`flashcard-results-cards ${expanded["again"] ? "expanded" : ""}`}>
+                            {againCards.map((answer, index) => (
+                                <div key={index} className="flashcard-results-card">
+                                    <h3>{answer.card.front}</h3>
+                                    <p>{answer.card.back}</p>
+                                </div>
+                            ))}
+                        </div>
                     </div>
 
+                    <div className='flashcard-results hard' onClick={() => toggleExpanded("hard")}>
+                        <div className={`flashcard-results-header ${expanded["hard"] ? "expanded" : ""}`}>
+                            <h2>Hard ({hardCards.length})</h2>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                                <path d="M0 0h24v24H0z" fill="none" />
+                                <path fill="currentColor" d="M15.88 9.29L12 13.17L8.12 9.29a.996.996 0 1 0-1.41 1.41l4.59 4.59c.39.39 1.02.39 1.41 0l4.59-4.59a.996.996 0 0 0 0-1.41c-.39-.38-1.03-.39-1.42 0" />
+                            </svg>
+                        </div>
+
+                        <div className={`flashcard-results-cards ${expanded["hard"] ? "expanded" : ""}`}>
+                            {hardCards.map((answer, index) => (
+                                <div key={index} className="flashcard-results-card">
+                                    <h3>{answer.card.front}</h3>
+                                    <p>{answer.card.back}</p>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+
+                    <div className='flashcard-results good' onClick={() => toggleExpanded("good")}>
+                        <div className={`flashcard-results-header ${expanded["good"] ? "expanded" : ""}`}>
+                            <h2>Knew It ({goodCards.length})</h2>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                                <path d="M0 0h24v24H0z" fill="none" />
+                                <path fill="currentColor" d="M15.88 9.29L12 13.17L8.12 9.29a.996.996 0 1 0-1.41 1.41l4.59 4.59c.39.39 1.02.39 1.41 0l4.59-4.59a.996.996 0 0 0 0-1.41c-.39-.38-1.03-.39-1.42 0" />
+                            </svg>
+                        </div>
+
+                        <div className={`flashcard-results-cards ${expanded["good"] ? "expanded" : ""}`}>
+                            {goodCards.map((answer, index) => (
+                                <div key={index} className="flashcard-results-card">
+                                    <h3>{answer.card.front}</h3>
+                                    <p>{answer.card.back}</p>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+
+                    <div className='flashcard-results easy' onClick={() => toggleExpanded("easy")}>
+                        <div className={`flashcard-results-header ${expanded["easy"] ? "expanded" : ""}`}>
+                            <h2>Easy ({easyCards.length})</h2>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                                <path d="M0 0h24v24H0z" fill="none" />
+                                <path fill="currentColor" d="M15.88 9.29L12 13.17L8.12 9.29a.996.996 0 1 0-1.41 1.41l4.59 4.59c.39.39 1.02.39 1.41 0l4.59-4.59a.996.996 0 0 0 0-1.41c-.39-.38-1.03-.39-1.42 0" />
+                            </svg>
+                        </div>
+
+                        <div className={`flashcard-results-cards ${expanded["easy"] ? "expanded" : ""}`}>
+                            {easyCards.map((answer, index) => (
+                                <div key={index} className="flashcard-results-card">
+                                    <h3>{answer.card.front}</h3>
+                                    <p>{answer.card.back}</p>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
                 </>
             )}
         </>

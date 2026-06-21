@@ -76,7 +76,7 @@ function App()
     localStorage.setItem("theme", theme);
   }, [theme]);
 
-  const [collapsed, setCollapsed] = useState(false);
+  const [collapsed, setCollapsed] = useState(true);
 
 
   return (

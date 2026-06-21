@@ -16,7 +16,13 @@ function DeckView({ decks, setDecks, selectedDeckId, setSelectedDeckId, selected
     const card = {
       id: "card_" + crypto.randomUUID(),
       front: "",
-      back: ""
+      back: "",
+      srs: {
+        dueDate: null,
+        interval: 0,
+        easeFactor: 2.5,
+        repetitions: 0
+      }
     };
 
     setDecks(decks => decks.map(deck => deck.id === selectedDeckId ? { ...deck, cards: [...deck.cards, card] } : deck));
