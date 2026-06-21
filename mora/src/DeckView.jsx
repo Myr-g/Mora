@@ -3,9 +3,14 @@ import './App.css'
 
 function DeckView({ decks, setDecks, selectedDeckId, setSelectedDeckId, selectedDeck, showStudyModal, setShowStudyModal, setIsStudying, setStudyMode })
 {
+  const [isEditingName, setIsEditingName] = useState(false);
   const [editingId, setEditingId] = useState(null);
   const [sideByCardId, setSideByCardId] = useState({});
   const [search, setSearch] = useState("");
+
+  const renameDeck = (id, newName) => {
+    setDecks(decks => decks.map(deck => deck.id === id ? {...deck, name: newName} : deck));
+  };
 
   const createCard = () => {
     const card = {
@@ -78,7 +83,31 @@ function DeckView({ decks, setDecks, selectedDeckId, setSelectedDeckId, selected
 	            <path fill="currentColor" d="M16.62 2.99a1.25 1.25 0 0 0-1.77 0L6.54 11.3a.996.996 0 0 0 0 1.41l8.31 8.31c.49.49 1.28.49 1.77 0s.49-1.28 0-1.77L9.38 12l7.25-7.25c.48-.48.48-1.28-.01-1.76" />
             </svg>
           </button>
-          <h1 className='deck-name'>{selectedDeck.name}</h1>
+          
+          {isEditingName ? (
+            <input autoFocus onFocus={(e) => e.target.select()} defaultValue={selectedDeck.name} 
+              onBlur={e => {
+                renameDeck(selectedDeckId, (e.target.value || "Unnamed Deck")); 
+                setIsEditingName(false);
+              }}
+
+              onKeyDown={e => {
+                if(e.key === "Enter") 
+                {
+                  renameDeck(selectedDeckId, (e.target.value || "Unnamed Deck"));
+                  setIsEditingName(false);
+                }
+                    
+                else if(e.key === "Escape") 
+                {
+                  setIsEditingName(false);
+                }
+              }}
+            />
+          ) : 
+          (
+            <h2 className='deck-name' onClick={() => setIsEditingName(true)}>{selectedDeck.name}</h2>
+          )}
         </section>
 
         <p className='cards-in-deck'>{selectedDeck.cards.length} cards</p>
@@ -156,9 +185,10 @@ function DeckView({ decks, setDecks, selectedDeckId, setSelectedDeckId, selected
                   <label>Study Mode</label>
                   <select className="study-modal-select" onChange={(e) => {if(e.target.value) { setIsStudying(true), setShowStudyModal(false); setStudyMode(e.target.value);}}} defaultValue="">
                     <option value="">Select a Study Mode</option>
-                    <option value="flashcards">Flashcards</option>
+                    <option value="review">Flashcards (Review)</option>
+                    <option value="flashcards">Flashcards (SRS)</option>
                     <option value="multiple-choice">Multiple Choice</option>
-                    <option value="matching">Matching / Drag-and-Drop</option>
+                    <option value="matching">Matching</option>
                     <option value="write-the-definition">Write the Definition</option>
                   </select>
                 </div>

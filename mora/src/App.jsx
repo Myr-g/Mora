@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import './App.css'
 import DeckList from './DeckList.jsx';
-import DeckView from "./DeckView.jsx";
+import DeckView from './DeckView.jsx';
 import StudyView from './StudyView.jsx';
 
 function App() 
@@ -76,16 +76,28 @@ function App()
     localStorage.setItem("theme", theme);
   }, [theme]);
 
+  const [collapsed, setCollapsed] = useState(false);
+
 
   return (
     <>
       <div className='mora-layout'>
-        <div className='mora-sidebar'>
-          <h2 className='sidebar-header'>Mora</h2>
+        <div className={`mora-sidebar ${collapsed ? "collapsed" : ""}`}>
+          <div className='sidebar-header'>
+            <h2></h2>
+            <h2>Menu</h2>
+            <button className='sidebar-toggle' onClick={() => setCollapsed(!collapsed)}>
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                <path d="M0 0h25v24H0z" fill="none" />
+                <path fill="currentColor" d="M3.563 6a.75.75 0 0 1 .75-.75h16a.75.75 0 0 1 0 1.5h-16a.75.75 0 0 1-.75-.75m0 12a.75.75 0 0 1 .75-.75h16a.75.75 0 0 1 0 1.5h-16a.75.75 0 0 1-.75-.75m.75-6.75a.75.75 0 0 0 0 1.5h16a.75.75 0 0 0 0-1.5z" />
+              </svg>
+            </button>
+          </div>
+
           <div className='sidebar-item' onClick={() => {setSelectedDeckId(null); setIsStudying(false); setStudyMode(null);}}>
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24">
               <path d="M0 0h24v24H0z" fill="none" />
-	            <g fill="none" fill-rule="evenodd">
+	            <g fill="none" fillRule="evenodd">
 		            <path d="m12.593 23.258l-.011.002l-.071.035l-.02.004l-.014-.004l-.071-.035q-.016-.005-.024.005l-.004.01l-.017.428l.005.02l.01.013l.104.074l.015.004l.012-.004l.104-.074l.012-.016l.004-.017l-.017-.427q-.004-.016-.017-.018m.265-.113l-.013.002l-.185.093l-.01.01l-.003.011l.018.43l.005.012l.008.007l.201.093q.019.005.029-.008l.004-.014l-.034-.614q-.005-.018-.02-.022m-.715.002a.02.02 0 0 0-.027.006l-.006.014l-.034.614q.001.018.017.024l.015-.002l.201-.093l.01-.008l.004-.011l.017-.43l-.003-.012l-.01-.01z" />
 		            <path fill="currentColor" d="M10.772 2.688a2 2 0 0 1 2.456 0l8.384 6.52c.753.587.337 1.792-.615 1.792H20v8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-8h-.997c-.953 0-1.367-1.206-.615-1.791z" />
 	            </g>
@@ -102,7 +114,7 @@ function App()
           </div>
         </div>
 
-        <div className='mora-content-container'>
+        <div className={`mora-content-container ${collapsed ? "sidebar-collapsed" : ""}`}>
           <div className='mora-content'>
             {!selectedDeck && (
               <DeckList decks={decks} setDecks={setDecks} selectedDeckId={selectedDeckId} setSelectedDeckId={setSelectedDeckId}/>
