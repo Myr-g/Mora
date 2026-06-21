@@ -6,7 +6,7 @@ import MultipleChoice from './MultipleChoice.jsx';
 import Matching from './Matching.jsx';
 import WriteTheDefinition from './WriteTheDefinition.jsx'
 
-function StudyView({ selectedDeck, setIsStudying, studyMode, setStudyMode, showStudyModal, setShowStudyModal })
+function StudyView({ setDecks, selectedDeck, setIsStudying, studyMode, setStudyMode, showStudyModal, setShowStudyModal })
 {
     const [studyCards, setStudyCards] = useState(selectedDeck.cards);
     const [currentCardIndex, setCurrentCardIndex] = useState(0);
@@ -44,7 +44,7 @@ function StudyView({ selectedDeck, setIsStudying, studyMode, setStudyMode, showS
 
             {studyMode === "flashcards" && (
                 <>
-                    <Flashcards selectedDeck={selectedDeck} studyCards={studyCards} setStudyCards={setStudyCards} currentCardIndex={currentCardIndex} setCurrentCardIndex={setCurrentCardIndex} answers={answers} setAnswers={setAnswers} showResults={showResults} setShowResults={setShowResults} setShowStudyModal={setShowStudyModal} setStudyMode={setStudyMode} resetStudyState={resetStudyState}/>
+                    <Flashcards setDecks={setDecks} selectedDeck={selectedDeck} studyCards={studyCards} setStudyCards={setStudyCards} currentCardIndex={currentCardIndex} setCurrentCardIndex={setCurrentCardIndex} answers={answers} setAnswers={setAnswers} showResults={showResults} setShowResults={setShowResults} setShowStudyModal={setShowStudyModal} studyMode={studyMode} setStudyMode={setStudyMode} resetStudyState={resetStudyState}/>
                 </>
             )}
 

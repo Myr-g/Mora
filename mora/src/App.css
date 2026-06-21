@@ -918,6 +918,10 @@ body {
   border-bottom: 1px solid var(--border);
 }
 
+.flashcard-results-header div {
+  width: 24px;
+}
+
 .flashcard-results h2 {
   margin: 0 auto;
   font-size: 1.25rem;
@@ -951,6 +955,22 @@ body {
 
 .flashcard-results-card p {
   margin-bottom: 1.25rem;
+}
+
+.flashcards-message {
+  width: 600px;
+  max-width: 100%;
+  min-height: 350px;
+  margin: 0 auto;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 1rem;
+
+  text-align: center;
+  font-size: 1.25rem;
+  font-weight: 600;
 }
 
 @media (max-width: 768px) {
