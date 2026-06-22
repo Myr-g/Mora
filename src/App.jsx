@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import './App.css'
 import DeckList from './DeckList.jsx';
 import DeckView from './DeckView.jsx';
@@ -11,12 +11,22 @@ function App()
     {
       const data = localStorage.getItem("decks");
 
-      return data ? JSON.parse(data) : [];
+      return data ? JSON.parse(data) : [
+        {id: "deck_123", name: "Genki Chapter 1 Vocab", cards: [{id: "card_1", front: "おかあさん", back: "Mother", srs: {dueDate: null, interval: 0, easeFactor: 2.5, repetitions: 0}}, {id: "card_2", front: "おとうさん", back: "Father", srs: {dueDate: null, interval: 0, easeFactor: 2.5, repetitions: 0}}, {id: "card_3", front: "おねえさん", back: "Older Sister", srs: {dueDate: null, interval: 0, easeFactor: 2.5, repetitions: 0}}, {id: "card_4", front: "おにいさん", back: "Older Brother", srs: {dueDate: null, interval: 0, easeFactor: 2.5, repetitions: 0}}, {id: "card_5", front: "いもうと", back: "Younger Sister", srs: {dueDate: null, interval: 0, easeFactor: 2.5, repetitions: 0}}, {id: "card_6", front: "おとうと", back: "Younger Brother", srs: {dueDate: null, interval: 0, easeFactor: 2.5, repetitions: 0}}, {id: "card_7", front: "いぬ", back: "Dog", srs: {dueDate: null, interval: 0, easeFactor: 2.5, repetitions: 0}}, {id: "card_8", front: "ねこ", back: "Cat", srs: {dueDate: null, interval: 0, easeFactor: 2.5, repetitions: 0}}, {id: "card_9", front: "いしゃ", back: "Doctor", srs: {dueDate: null, interval: 0, easeFactor: 2.5, repetitions: 0}}, {id: "card_10", front: "べんごし", back: "Lawyer", srs: {dueDate: null, interval: 0, easeFactor: 2.5, repetitions: 0}}, {id: "card_11", front: "れきし", back: "History", srs: {dueDate: null, interval: 0, easeFactor: 2.5, repetitions: 0}}, {id: "card_12", front: "コンピューター", back: "Computer", srs: {dueDate: null, interval: 0, easeFactor: 2.5, repetitions: 0}}]},
+        {id: "deck_456", name: "Genki Chapter 1 Verb Conjugation", cards: []},
+        {id: "deck_789", name: "Japanese Numbers & Dates", cards: []},
+        {id: "deck_101112", name: "Kanji (ew)", cards: []}
+      ];
     }
 
     catch(err)
     {
-      return [];
+      return [
+        {id: "deck_123", name: "Genki Chapter 1 Vocab", cards: []},
+        {id: "deck_456", name: "Genki Chapter 1 Verb Conjugation", cards: []},
+        {id: "deck_789", name: "Japanese Numbers & Dates", cards: []},
+        {id: "deck_101112", name: "Kanji (ew)", cards: []}
+      ];
     }
 
   });
@@ -57,6 +67,67 @@ function App()
     }
   }, [selectedDeck]);
 
+  const exportDecks = () => {
+    const data = {
+      version: 1,
+      exportedAt: new Date().toISOString(),
+      decks
+    };
+
+    const json = JSON.stringify(data, null, 2);
+    const blob = new Blob([json], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "mora-decks.json";
+    a.click();
+
+    setTimeout(() => {
+      URL.revokeObjectURL(url);
+    }, 100);
+  };
+
+  const fileInputRef = useRef(null);
+
+  const importDecks = () => {
+    fileInputRef.current.click();
+  };
+
+  const handleImport = (e) => {
+    const file = e.target.files[0];
+
+    if(!file)
+    {
+      return;
+    }
+
+    const reader = new FileReader();
+
+    reader.onload = (event) => {
+      try
+      {
+        const data = JSON.parse(event.target.result);
+
+        if(!Array.isArray(data.decks))
+        {
+          alert("Invalid mora deck import file.");
+          return;
+        }
+
+        setDecks(data.decks);
+        e.target.value = "";
+      }
+
+      catch(err)
+      {
+        alert("Invalid JSON file.");
+      }
+    };
+
+    reader.readAsText(file);
+  };
+
   const [theme, setTheme] = useState(() => {
     return localStorage.getItem("theme") || "Dark";
   });
@@ -93,6 +164,23 @@ function App()
 	            </g>
             </svg>
             <span>Home</span>
+          </div>
+
+          <div className='sidebar-item' onClick={() => exportDecks()}>
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
+              <path d="M0 0h16v16H0z" fill="none" />
+              <path fill="currentColor" d="M8.505 1c.422-.003.844.17 1.166.516l1.95 2.05c.213.228.213.6 0 .828a.52.52 0 0 1-.771 0L9 2.451v7.993c0 .307-.224.556-.5.556s-.5-.249-.5-.556v-7.96l-1.82 1.91a.52.52 0 0 1-.77 0a.617.617 0 0 1 0-.829l1.95-2.05A1.58 1.58 0 0 1 8.5 1zM4.18 7c-.473 0-.88.294-.972.703l-1.189 5.25a1 1 0 0 0-.019.172c0 .483.444.875.99.875h11.02q.098 0 .194-.017c.537-.095.885-.556.778-1.03l-1.19-5.25C13.7 7.294 13.293 7 12.822 7zM6 6v1h5V6h1.825c.946 0 1.76.606 1.946 1.447l1.19 5.4c.215.975-.482 1.923-1.556 2.118a2 2 0 0 1-.39.035H2.985C1.888 15 1 14.194 1 13.2q0-.179.039-.353l1.19-5.4C2.414 6.606 3.229 6 4.174 6z" />
+            </svg>
+            <span>Export Decks</span>
+          </div>
+
+          <div className='sidebar-item' onClick={() => importDecks()}>
+            <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 16 16">
+              <path d="M0 0h16v16H0z" fill="none" />
+              <path fill="currentColor" d="m9 10.114l1.85-1.943a.52.52 0 0 1 .77 0c.214.228.214.6 0 .829l-1.95 2.05a1.55 1.55 0 0 1-2.31 0L5.41 9a.617.617 0 0 1 0-.829a.52.52 0 0 1 .77 0L8 10.082V1.556C8 1.249 8.224 1 8.5 1s.5.249.5.556zM4.18 6a.99.99 0 0 0-.972.804l-1.189 6Q2 12.9 2 13c0 .552.444 1 .99 1h11.02q.098 0 .194-.02a1 1 0 0 0 .778-1.176l-1.19-6a.99.99 0 0 0-.97-.804zM6 5v1h5V5h1.825c.946 0 1.76.673 1.946 1.608l1.19 6A2 2 0 0 1 14.016 15H2.984a1.992 1.992 0 0 1-1.945-2.392l1.19-6C2.414 5.673 3.229 5 4.174 5z" />
+            </svg>
+            <span>Import Decks</span>
+            <input type="file" accept=".json" ref={fileInputRef} style={{ display: "none" }} onChange={handleImport}/>
           </div>
 
           <div className='sidebar-item' onClick={() => setTheme(theme === "Dark" ? "Light" : "Dark")}>

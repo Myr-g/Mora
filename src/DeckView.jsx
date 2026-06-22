@@ -116,7 +116,14 @@ function DeckView({ decks, setDecks, selectedDeckId, setSelectedDeckId, selected
           )}
         </section>
 
-        <p className='cards-in-deck'>{selectedDeck.cards.length} cards</p>
+        <p className='cards-in-deck'>{selectedDeck.cards.length} cards ◦ {selectedDeck.cards.filter(card => {
+          if(!card.srs?.dueDate)
+          {
+            return true;
+          }
+
+          return new Date(card.srs.dueDate) <= new Date();
+        }).length} due</p>
 
         <div className='deck-actions'>
           <button className='create-card' onClick={createCard}>Add Card</button>
@@ -136,7 +143,7 @@ function DeckView({ decks, setDecks, selectedDeckId, setSelectedDeckId, selected
             const side = sideByCardId[card.id] || "front";
 
             return (
-              <div key={card.id} className='card' onClick={() => flipCard(card)}>
+              <div key={card.id} className={`card ${!card.srs?.dueDate || new Date(card.srs.dueDate) <= new Date() ? "due" : ""}`} onClick={() => flipCard(card)}>
                 <div className="card-side">{side}</div>
 
                 <div className='card-h2-container'>

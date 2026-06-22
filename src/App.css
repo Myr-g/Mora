@@ -266,6 +266,10 @@ body {
   transform: scale(0.98);
 }
 
+.deck.due {
+  box-shadow: 0 0 0 1px var(--accent), 0 0 12px rgba(102, 117, 134, 0.15);
+}
+
 .deck-h2-container {
   flex: 1;
   margin: 0;
@@ -528,6 +532,10 @@ body {
 .card:hover {
   transform: translateY(-2px);
   box-shadow: 0 4px 12px var(--shadow);
+}
+
+.card.due {
+  box-shadow: 0 0 0 1px var(--accent), 0 0 12px rgba(102, 117, 134, 0.15);
 }
 
 .card-side {

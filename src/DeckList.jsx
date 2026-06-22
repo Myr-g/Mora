@@ -35,8 +35,17 @@ function DeckList({decks, setDecks, selectedDeckId, setSelectedDeckId })
 
         <div className='deck-list'>
           {decks.map((deck) => {
+            const dueCount = deck.cards.filter(card => {
+              if(!card.srs?.dueDate)
+              {
+                return true;
+              }
+
+              return new Date(card.srs.dueDate) <= new Date();
+            }).length;
+
             return (
-              <div key={deck.id} className='deck' onClick={() => {setSelectedDeckId(deck.id); setEditingId(null);}}>
+              <div key={deck.id} className={`deck ${dueCount > 0 ? "due" : ""}`} onClick={() => {setSelectedDeckId(deck.id); setEditingId(null);}}>
                 <div className='deck-h2-container'>
                   {editingId === deck.id ? (
                     <input autoFocus onFocus={(e) => e.target.select()} defaultValue={deck.name} 
@@ -64,7 +73,7 @@ function DeckList({decks, setDecks, selectedDeckId, setSelectedDeckId })
                   )}
                 </div>
                 
-                <p>{deck.cards.length} cards</p>
+                <p>{deck.cards.length} cards ◦ {dueCount} due</p>
 
                 <button className='delete-deck' onClick={(e) => {e.stopPropagation(); deleteDeck(deck.id); }}>
                   <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24">
