@@ -10,25 +10,13 @@ function App()
     try
     {
       const data = localStorage.getItem("decks");
-
-      return data ? JSON.parse(data) : [
-        {id: "deck_123", name: "Genki Chapter 1 Vocab", cards: [{id: "card_1", front: "おかあさん", back: "Mother", srs: {dueDate: null, interval: 0, easeFactor: 2.5, repetitions: 0}}, {id: "card_2", front: "おとうさん", back: "Father", srs: {dueDate: null, interval: 0, easeFactor: 2.5, repetitions: 0}}, {id: "card_3", front: "おねえさん", back: "Older Sister", srs: {dueDate: null, interval: 0, easeFactor: 2.5, repetitions: 0}}, {id: "card_4", front: "おにいさん", back: "Older Brother", srs: {dueDate: null, interval: 0, easeFactor: 2.5, repetitions: 0}}, {id: "card_5", front: "いもうと", back: "Younger Sister", srs: {dueDate: null, interval: 0, easeFactor: 2.5, repetitions: 0}}, {id: "card_6", front: "おとうと", back: "Younger Brother", srs: {dueDate: null, interval: 0, easeFactor: 2.5, repetitions: 0}}, {id: "card_7", front: "いぬ", back: "Dog", srs: {dueDate: null, interval: 0, easeFactor: 2.5, repetitions: 0}}, {id: "card_8", front: "ねこ", back: "Cat", srs: {dueDate: null, interval: 0, easeFactor: 2.5, repetitions: 0}}, {id: "card_9", front: "いしゃ", back: "Doctor", srs: {dueDate: null, interval: 0, easeFactor: 2.5, repetitions: 0}}, {id: "card_10", front: "べんごし", back: "Lawyer", srs: {dueDate: null, interval: 0, easeFactor: 2.5, repetitions: 0}}, {id: "card_11", front: "れきし", back: "History", srs: {dueDate: null, interval: 0, easeFactor: 2.5, repetitions: 0}}, {id: "card_12", front: "コンピューター", back: "Computer", srs: {dueDate: null, interval: 0, easeFactor: 2.5, repetitions: 0}}]},
-        {id: "deck_456", name: "Genki Chapter 1 Verb Conjugation", cards: []},
-        {id: "deck_789", name: "Japanese Numbers & Dates", cards: []},
-        {id: "deck_101112", name: "Kanji (ew)", cards: []}
-      ];
+      return data ? JSON.parse(data) : [];
     }
 
     catch(err)
     {
-      return [
-        {id: "deck_123", name: "Genki Chapter 1 Vocab", cards: []},
-        {id: "deck_456", name: "Genki Chapter 1 Verb Conjugation", cards: []},
-        {id: "deck_789", name: "Japanese Numbers & Dates", cards: []},
-        {id: "deck_101112", name: "Kanji (ew)", cards: []}
-      ];
+      return [];
     }
-
   });
 
   useEffect(() => { localStorage.setItem("decks", JSON.stringify(decks)); }, [decks]);
