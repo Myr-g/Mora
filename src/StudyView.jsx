@@ -84,6 +84,11 @@ function StudyView({ setDecks, selectedDeck, setIsStudying, studyMode, setStudyM
                                     <option value="matching">Matching</option>
                                     <option value="write-the-definition">Write the Definition</option>
                                 </select>
+
+                                <div className='study-modal-reverse'>
+                                    <input type="checkbox" checked={false} onChange={(e) => e.target.value = !e.target.value}/>
+                                    <label>Reverse Cards? (back of cards will be shown first)</label>
+                                </div>
                             </div>
 
                             <div className='study-modal-actions'>
