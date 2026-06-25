@@ -1,10 +1,12 @@
 import { useState, useEffect } from 'react'
 import './App.css'
 
-function Matching({ selectedDeck, studyCards, setStudyCards, answers, setAnswers, showResults, setShowResults, setShowStudyModal, studyMode, setStudyMode, resetStudyState, shuffle })
+function Matching({ selectedDeck, studyCards, setStudyCards, answers, setAnswers, showResults, setShowResults, setShowStudyModal, reverseMode, studyMode, setStudyMode, resetStudyState, shuffle })
 {
     const [selectedAnswer, setSelectedAnswer] = useState(null);
     const [matches, setMatches] = useState([]);
+    const matchingQuestion = reverseMode ? "back" : "front";
+    const matchingAnswer = reverseMode ? "front" : "back";
 
     useEffect(() => {
         if(!showResults)
@@ -20,7 +22,7 @@ function Matching({ selectedDeck, studyCards, setStudyCards, answers, setAnswers
     };
 
     const shuffleAnswers = () => {
-        const answers = studyCards.map(card => card.back);
+        const answers = studyCards.map(card => card[matchingAnswer]);
         const shuffled_answers = shuffle(answers);
         setAnswers(shuffled_answers);
     };
@@ -55,7 +57,7 @@ function Matching({ selectedDeck, studyCards, setStudyCards, answers, setAnswers
                         <div className='matching-questions'>
                             {studyCards.map((card, index) => (
                                 <div key={index} className='matching-prompt'>
-                                    <div className='matching-question'>{card.front}</div>
+                                    <div className='matching-question'>{card[matchingQuestion]}</div>
                                     <div className='matching-slot' onClick={() => handleMatch(index)}>{matches[index] || ""}</div>
                                 </div>
                             ))}
@@ -75,9 +77,9 @@ function Matching({ selectedDeck, studyCards, setStudyCards, answers, setAnswers
                     <div className='deck-actions'>
                         <button className="try-again-button" onClick={resetMatchingState}>Try Again</button>
 
-                        {studyCards.some((card, index) => (matches[index] || "").trim().toLowerCase() !== card.back.trim().toLowerCase()) && (
+                        {studyCards.some((card, index) => (matches[index] || "").trim().toLowerCase() !== card[matchingAnswer].trim().toLowerCase()) && (
                             <button className='study-missed-cards-button' onClick={() => {
-                                const missedCards = studyCards.filter((card, index) => (matches[index] || "").trim().toLowerCase() !== card.back.trim().toLowerCase());
+                                const missedCards = studyCards.filter((card, index) => (matches[index] || "").trim().toLowerCase() !== card[matchingAnswer].trim().toLowerCase());
                                 setStudyCards(missedCards);
                                 resetMatchingState();
                                 setStudyMode("review");
@@ -87,17 +89,17 @@ function Matching({ selectedDeck, studyCards, setStudyCards, answers, setAnswers
                         <button className='study-button' onClick={() => setShowStudyModal(true)}>Study Options</button>
                     </div>
 
-                    <p className="score">Score: {studyCards.filter((card, index) => (matches[index] || "").trim().toLowerCase() === card.back.trim().toLowerCase()).length} / {studyCards.length}</p>
+                    <p className="score">Score: {studyCards.filter((card, index) => (matches[index] || "").trim().toLowerCase() === card[matchingAnswer].trim().toLowerCase()).length} / {studyCards.length}</p>
 
                     <div className='matching'>
                         <div className='matching-questions'>
                             {studyCards.map((card, index) => (
                                 <div key={index} className='matching-prompt'>
-                                    <div className='matching-question'>{card.front}</div>
-                                    <div className={`matching-slot ${(matches[index] || "").trim().toLowerCase() === card.back.trim().toLowerCase() ? "correct" : "incorrect"}`}>{matches[index] || ""}</div>
-                                    {(matches[index] || "").trim().toLowerCase() !== card.back.trim().toLowerCase() && (
+                                    <div className='matching-question'>{card[matchingQuestion]}</div>
+                                    <div className={`matching-slot ${(matches[index] || "").trim().toLowerCase() === card[matchingAnswer].trim().toLowerCase() ? "correct" : "incorrect"}`}>{matches[index] || ""}</div>
+                                    {(matches[index] || "").trim().toLowerCase() !== card[matchingAnswer].trim().toLowerCase() && (
                                         <>
-                                            <p className='matching-correct-answer'>{card.back}</p>
+                                            <p className='matching-correct-answer'>{card[matchingAnswer]}</p>
                                         </>
                                     )}
                                 </div>

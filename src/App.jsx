@@ -126,7 +126,7 @@ function App()
   }, [theme]);
 
   const [collapsed, setCollapsed] = useState(true);
-
+  const [reverseMode, setReverseMode] = useState(false);
 
   return (
     <>
@@ -187,11 +187,11 @@ function App()
             )}
 
             {selectedDeck && !isStudying && (
-              <DeckView decks={decks} setDecks={setDecks} selectedDeckId={selectedDeckId} setSelectedDeckId={setSelectedDeckId} selectedDeck={selectedDeck} showStudyModal = {showStudyModal} setShowStudyModal={setShowStudyModal} setIsStudying={setIsStudying} setStudyMode={setStudyMode}/>
+              <DeckView decks={decks} setDecks={setDecks} selectedDeckId={selectedDeckId} setSelectedDeckId={setSelectedDeckId} selectedDeck={selectedDeck} showStudyModal = {showStudyModal} setShowStudyModal={setShowStudyModal} reverseMode={reverseMode} setReverseMode={setReverseMode} setIsStudying={setIsStudying} setStudyMode={setStudyMode}/>
             )}
 
             {selectedDeck && isStudying && (
-              <StudyView setDecks={setDecks} selectedDeck={selectedDeck} setIsStudying={setIsStudying} studyMode={studyMode} setStudyMode={setStudyMode} showStudyModal = {showStudyModal} setShowStudyModal={setShowStudyModal}/>
+              <StudyView setDecks={setDecks} selectedDeck={selectedDeck} setIsStudying={setIsStudying} studyMode={studyMode} setStudyMode={setStudyMode} showStudyModal = {showStudyModal} setShowStudyModal={setShowStudyModal} reverseMode={reverseMode} setReverseMode={setReverseMode}/>
             )}
           </div>
         </div>

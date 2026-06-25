@@ -1,8 +1,11 @@
 import { useState, useEffect } from 'react'
 import './App.css'
 
-function WriteTheDefinition({ selectedDeck, studyCards, setStudyCards, answers, setAnswers, showResults, setShowResults, setShowStudyModal, studyMode, setStudyMode, resetStudyState })
+function WriteTheDefinition({ selectedDeck, studyCards, setStudyCards, answers, setAnswers, showResults, setShowResults, setShowStudyModal, reverseMode, studyMode, setStudyMode, resetStudyState })
 {
+    const writeTheDefinitionQuestion = reverseMode ? "back" : "front";
+    const writeTheDefinitionAnswer = reverseMode ? "front" : "back";
+
     useEffect(() => {
         if(!showResults) 
         {
@@ -34,7 +37,7 @@ function WriteTheDefinition({ selectedDeck, studyCards, setStudyCards, answers, 
                     <div className='write-the-definition'>
                         {studyCards.map((card, index) => (
                             <div key={index} className='write-the-definition-question'>
-                                <p>{card.front}</p>
+                                <p>{card[writeTheDefinitionQuestion]}</p>
                                 <input className='write-the-definition-answer' value={answers[index] || ""} onChange={(e) => { handleDefinition(e.target.value, index); }}></input>
                             </div>
                         ))}
@@ -47,9 +50,9 @@ function WriteTheDefinition({ selectedDeck, studyCards, setStudyCards, answers, 
                     <div className='deck-actions'>
                         <button className="try-again-button" onClick={resetStudyState}>Try Again</button>
 
-                        {studyCards.some((card, index) => answers[index].trim().toLowerCase() !== card.back.trim().toLowerCase()) && (
+                        {studyCards.some((card, index) => answers[index].trim().toLowerCase() !== card[writeTheDefinitionAnswer].trim().toLowerCase()) && (
                             <button className='study-missed-cards-button' onClick={() => {
-                                const missedCards = studyCards.filter((card, index) => answers[index].trim().toLowerCase() !== card.back.trim().toLowerCase());
+                                const missedCards = studyCards.filter((card, index) => answers[index].trim().toLowerCase() !== card[writeTheDefinitionAnswer].trim().toLowerCase());
                                 setStudyCards(missedCards);
                                 resetStudyState();
                                 setStudyMode("review");
@@ -59,17 +62,17 @@ function WriteTheDefinition({ selectedDeck, studyCards, setStudyCards, answers, 
                         <button className='study-button' onClick={() => setShowStudyModal(true)}>Study Options</button>
                     </div>
 
-                    <p className="score">Score: {studyCards.filter((card, index) => answers[index].trim().toLowerCase() === card.back.trim().toLowerCase()).length} / {answers.length}</p>
+                    <p className="score">Score: {studyCards.filter((card, index) => answers[index].trim().toLowerCase() === card[writeTheDefinitionAnswer].trim().toLowerCase()).length} / {answers.length}</p>
 
                     <div className='write-the-definition'>
                         {studyCards.map((card, index) => (
                             <div key={index} className='write-the-definition-prompt'>
-                                <p className='write-the-definition-question'>{card.front}</p>
-                                <input className={`write-the-definition-answer ${answers[index].trim().toLowerCase() === card.back.trim().toLowerCase() ? "correct" : "incorrect"}`} value={answers[index] || ""} readOnly></input>
+                                <p className='write-the-definition-question'>{card[writeTheDefinitionQuestion]}</p>
+                                <input className={`write-the-definition-answer ${answers[index].trim().toLowerCase() === card[writeTheDefinitionAnswer].trim().toLowerCase() ? "correct" : "incorrect"}`} value={answers[index] || ""} readOnly></input>
 
-                                {answers[index].trim().toLowerCase() !== card.back.trim().toLowerCase() && (
+                                {answers[index].trim().toLowerCase() !== card[writeTheDefinitionAnswer].trim().toLowerCase() && (
                                     <>
-                                        <p className='write-the-definition-correct-answer'>{card.back}</p>
+                                        <p className='write-the-definition-correct-answer'>{card[writeTheDefinitionAnswer]}</p>
                                     </>
                                 )}
                             </div>

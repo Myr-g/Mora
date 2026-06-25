@@ -6,12 +6,14 @@ import MultipleChoice from './MultipleChoice.jsx';
 import Matching from './Matching.jsx';
 import WriteTheDefinition from './WriteTheDefinition.jsx'
 
-function StudyView({ setDecks, selectedDeck, setIsStudying, studyMode, setStudyMode, showStudyModal, setShowStudyModal })
+function StudyView({ setDecks, selectedDeck, setIsStudying, studyMode, setStudyMode, showStudyModal, setShowStudyModal, reverseMode, setReverseMode})
 {
     const [studyCards, setStudyCards] = useState(selectedDeck.cards);
     const [currentCardIndex, setCurrentCardIndex] = useState(0);
     const [answers, setAnswers] = useState([]); 
     const [showResults, setShowResults] = useState(false);
+    
+    const orientationLocked = !showResults && studyMode !== "review";
 
     // Reset State
     const resetStudyState = () => {
@@ -38,31 +40,31 @@ function StudyView({ setDecks, selectedDeck, setIsStudying, studyMode, setStudyM
         <>
             {studyMode === "review" && (
                 <>
-                    <Review selectedDeck={selectedDeck} studyCards={studyCards} currentCardIndex={currentCardIndex} setCurrentCardIndex={setCurrentCardIndex} setShowStudyModal={setShowStudyModal}/>
+                    <Review selectedDeck={selectedDeck} studyCards={studyCards} currentCardIndex={currentCardIndex} setCurrentCardIndex={setCurrentCardIndex} setShowStudyModal={setShowStudyModal} reverseMode={reverseMode}/>
                 </>
             )}
 
             {studyMode === "flashcards" && (
                 <>
-                    <Flashcards setDecks={setDecks} selectedDeck={selectedDeck} studyCards={studyCards} setStudyCards={setStudyCards} currentCardIndex={currentCardIndex} setCurrentCardIndex={setCurrentCardIndex} answers={answers} setAnswers={setAnswers} showResults={showResults} setShowResults={setShowResults} setShowStudyModal={setShowStudyModal} studyMode={studyMode} setStudyMode={setStudyMode} resetStudyState={resetStudyState}/>
+                    <Flashcards setDecks={setDecks} selectedDeck={selectedDeck} studyCards={studyCards} setStudyCards={setStudyCards} currentCardIndex={currentCardIndex} setCurrentCardIndex={setCurrentCardIndex} answers={answers} setAnswers={setAnswers} showResults={showResults} setShowResults={setShowResults} setShowStudyModal={setShowStudyModal} reverseMode={reverseMode} studyMode={studyMode} setStudyMode={setStudyMode} resetStudyState={resetStudyState}/>
                 </>
             )}
 
             {studyMode === "multiple-choice" && (
                 <>
-                    <MultipleChoice selectedDeck={selectedDeck} studyCards={studyCards} setStudyCards={setStudyCards} currentCardIndex={currentCardIndex} setCurrentCardIndex={setCurrentCardIndex} answers={answers} setAnswers={setAnswers} setShowStudyModal={setShowStudyModal} studyMode={studyMode} setStudyMode={setStudyMode} resetStudyState={resetStudyState} shuffle={shuffle}/>
+                    <MultipleChoice selectedDeck={selectedDeck} studyCards={studyCards} setStudyCards={setStudyCards} currentCardIndex={currentCardIndex} setCurrentCardIndex={setCurrentCardIndex} answers={answers} setAnswers={setAnswers} showResults={showResults} setShowResults={setShowResults} setShowStudyModal={setShowStudyModal} reverseMode={reverseMode} studyMode={studyMode} setStudyMode={setStudyMode} resetStudyState={resetStudyState} shuffle={shuffle}/>
                 </>
             )}
 
             {studyMode == "matching" && (
                 <>
-                    <Matching selectedDeck={selectedDeck} studyCards={studyCards} setStudyCards={setStudyCards} answers={answers} setAnswers={setAnswers} showResults={showResults} setShowResults={setShowResults} setShowStudyModal={setShowStudyModal} studyMode={studyMode} setStudyMode={setStudyMode} resetStudyState={resetStudyState} shuffle={shuffle}/>
+                    <Matching selectedDeck={selectedDeck} studyCards={studyCards} setStudyCards={setStudyCards} answers={answers} setAnswers={setAnswers} showResults={showResults} setShowResults={setShowResults} setShowStudyModal={setShowStudyModal} reverseMode={reverseMode} studyMode={studyMode} setStudyMode={setStudyMode} resetStudyState={resetStudyState} shuffle={shuffle}/>
                 </>
             )}
 
             {studyMode === "write-the-definition" && (
                 <>
-                    <WriteTheDefinition selectedDeck={selectedDeck} studyCards={studyCards} setStudyCards={setStudyCards} answers={answers} setAnswers={setAnswers} showResults={showResults} setShowResults={setShowResults} setShowStudyModal={setShowStudyModal} studyMode={studyMode} setStudyMode={setStudyMode} resetStudyState={resetStudyState}/>
+                    <WriteTheDefinition selectedDeck={selectedDeck} studyCards={studyCards} setStudyCards={setStudyCards} answers={answers} setAnswers={setAnswers} showResults={showResults} setShowResults={setShowResults} setShowStudyModal={setShowStudyModal} reverseMode={reverseMode} studyMode={studyMode} setStudyMode={setStudyMode} resetStudyState={resetStudyState}/>
                 </>
             )}
 
@@ -86,7 +88,7 @@ function StudyView({ setDecks, selectedDeck, setIsStudying, studyMode, setStudyM
                                 </select>
 
                                 <div className='study-modal-reverse'>
-                                    <input type="checkbox" checked={false} onChange={(e) => e.target.value = !e.target.value}/>
+                                    <input type="checkbox" checked={reverseMode} onChange={(e) => setReverseMode(e.target.checked)} disabled={orientationLocked}/>
                                     <label>Reverse Cards? (back of cards will be shown first)</label>
                                 </div>
                             </div>

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import './App.css'
 
-function DeckView({ decks, setDecks, selectedDeckId, setSelectedDeckId, selectedDeck, showStudyModal, setShowStudyModal, setIsStudying, setStudyMode })
+function DeckView({ decks, setDecks, selectedDeckId, setSelectedDeckId, selectedDeck, showStudyModal, setShowStudyModal, reverseMode, setReverseMode,setIsStudying, setStudyMode })
 {
   const [isEditingName, setIsEditingName] = useState(false);
   const [editingId, setEditingId] = useState(null);
@@ -204,6 +204,11 @@ function DeckView({ decks, setDecks, selectedDeckId, setSelectedDeckId, selected
                     <option value="matching">Matching</option>
                     <option value="write-the-definition">Write the Definition</option>
                   </select>
+
+                  <div className='study-modal-reverse'>
+                    <input type="checkbox" checked={reverseMode} onChange={(e) => setReverseMode(e.target.checked)}/>
+                    <label>Reverse Cards? (back of cards will be shown first)</label>
+                  </div>
                 </div>
 
                 <div className='study-modal-actions'>

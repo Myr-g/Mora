@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import './App.css'
 
-function Flashcards({ setDecks, selectedDeck, studyCards, setStudyCards, currentCardIndex, setCurrentCardIndex, answers, setAnswers, showResults, setShowResults, setShowStudyModal, studyMode, setStudyMode, resetStudyState })
+function Flashcards({ setDecks, selectedDeck, studyCards, setStudyCards, currentCardIndex, setCurrentCardIndex, answers, setAnswers, showResults, setShowResults, setShowStudyModal, reverseMode, studyMode, setStudyMode, resetStudyState })
 {
     useEffect(() => {
         if(studyMode === "flashcards")
@@ -21,11 +21,11 @@ function Flashcards({ setDecks, selectedDeck, studyCards, setStudyCards, current
         }
     }, [studyMode]);
 
-    const [side, setSide] = useState("front");
+    const [side, setSide] = useState(reverseMode ? "back" : "front");
 
     const resetFlashcardsState = () => {
         resetStudyState();
-        setSide("front");
+        setSide(reverseMode ? "back" : "front");
     };
 
     const flipCard = () => {
@@ -45,9 +45,9 @@ function Flashcards({ setDecks, selectedDeck, studyCards, setStudyCards, current
             }
         ]);
 
-        setSide("front");
+        setSide(reverseMode ? "back" : "front")
 
-        srs(selectedDeck.cards[currentCardIndex], rating);
+        srs(studyCards[currentCardIndex], rating);
 
         if(currentCardIndex < studyCards.length - 1)
         {

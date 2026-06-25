@@ -1,18 +1,18 @@
 import { useState, useEffect } from 'react'
 import './App.css'
 
-function Review({ selectedDeck, studyCards, currentCardIndex, setCurrentCardIndex, setShowStudyModal})
+function Review({ selectedDeck, studyCards, currentCardIndex, setCurrentCardIndex, setShowStudyModal, reverseMode})
 {
-    const [side, setSide] = useState("front");
+    const [side, setSide] = useState(reverseMode ? "back" : "front");
 
     const previousCard = () => {
         setCurrentCardIndex(i => i > 0 ? i - 1 : i);
-        setSide("front");
+        setSide(reverseMode ? "back" : "front");
     };
 
     const nextCard = () => {
         setCurrentCardIndex(i => i < studyCards.length - 1 ? i + 1 : i);
-        setSide("front");
+        setSide(reverseMode ? "back" : "front");
     };
 
     const flipCard = () => {

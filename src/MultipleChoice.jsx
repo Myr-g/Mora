@@ -1,9 +1,11 @@
 import { useState, useEffect } from 'react'
 import './App.css'
 
-function MultipleChoice({ selectedDeck, studyCards, setStudyCards, currentCardIndex, setCurrentCardIndex, answers, setAnswers, setShowStudyModal, studyMode, setStudyMode, resetStudyState, shuffle })
+function MultipleChoice({ selectedDeck, studyCards, setStudyCards, currentCardIndex, setCurrentCardIndex, answers, setAnswers, showResults, setShowResults, setShowStudyModal, reverseMode, studyMode, setStudyMode, resetStudyState, shuffle })
 {
     const [choices, setChoices] = useState([]);
+    const multipleChoiceQuestion = reverseMode ? "back" : "front";
+    const multipleChoiceAnswer = reverseMode ? "front" : "back";
 
     useEffect(() => {
         if(currentCardIndex < studyCards.length)
@@ -18,28 +20,36 @@ function MultipleChoice({ selectedDeck, studyCards, setStudyCards, currentCardIn
     };
 
     const generateChoices = () => {
-        const correctAnswer = studyCards[currentCardIndex].back;
+        const correctAnswer = studyCards[currentCardIndex][multipleChoiceAnswer];
 
         let incorrectAnswers = shuffle(studyCards.filter((_, i) => i !== currentCardIndex));
-        incorrectAnswers = incorrectAnswers.slice(0, 3).map(card => card.back);
+        incorrectAnswers = incorrectAnswers.slice(0, 3).map(card => card[multipleChoiceAnswer]);
 
         const choices = shuffle([correctAnswer, ...incorrectAnswers]);
         return choices;
     };
 
     const handleChoice = (choice) => {
-        const correctAnswer = studyCards[currentCardIndex].back;
+        const correctAnswer = studyCards[currentCardIndex][multipleChoiceAnswer];
 
         setAnswers(answers => [
             ...answers, {
                 index: currentCardIndex,
-                question: studyCards[currentCardIndex].front,
+                question: studyCards[currentCardIndex][multipleChoiceQuestion],
                 selected: choice,
                 correct: correctAnswer
             }
         ]);
 
-        setCurrentCardIndex(i => i + 1);
+        if(currentCardIndex < studyCards.length - 1)
+        {
+            setCurrentCardIndex(i => i + 1);
+        }
+        
+        else
+        {
+            setShowResults(true);
+        }
     };
 
     return (
@@ -48,13 +58,13 @@ function MultipleChoice({ selectedDeck, studyCards, setStudyCards, currentCardIn
                 <h1>{selectedDeck.name} - Multiple Choice</h1>
             </section>
 
-            {currentCardIndex !== studyCards.length && (
+            {!showResults && (
                 <>
                     <button className='study-button' onClick={() => setShowStudyModal(true)}>Study Options</button>
 
                     <div className='multiple-choice'>
                         <div className='multiple-choice-question'>
-                            <h2>{studyCards[currentCardIndex].front}</h2>
+                            <h2>{studyCards[currentCardIndex][multipleChoiceQuestion]}</h2>
                         </div>
 
                         <div className='multiple-choice-answers'>
@@ -68,7 +78,7 @@ function MultipleChoice({ selectedDeck, studyCards, setStudyCards, currentCardIn
                 </>
             )}
 
-            {currentCardIndex === studyCards.length && (
+            {showResults && (
                 <>
                     <div className='deck-actions'>
                         <button className="try-again-button" onClick={resetMultipleChoiceState}>Try Again</button>
