@@ -1,8 +1,9 @@
 {
-    "id": "/",
+    "id": "/Mora/",
   "name": "Mora",
   "short_name": "Mora",
-  "start_url": "/",
+  "start_url": "/Mora/",
+  "scope": "/Mora/",
   "display": "standalone",
   "background_color": "#121212",
   "theme_color": "#4A5563",
