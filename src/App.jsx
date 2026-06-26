@@ -195,7 +195,16 @@ function App()
             )}
           </div>
         </div>
+
+        <div className={`mora-overlay ${collapsed ? "" : "visible"}`} />
       </div>
+
+      <button className={`mobile-sidebar-toggle ${collapsed ? "sidebar-collapsed" : ""}`} onClick={() => setCollapsed(!collapsed)}>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+          <path d="M0 0h25v24H0z" fill="none" />
+          <path fill="currentColor" d="M3.563 6a.75.75 0 0 1 .75-.75h16a.75.75 0 0 1 0 1.5h-16a.75.75 0 0 1-.75-.75m0 12a.75.75 0 0 1 .75-.75h16a.75.75 0 0 1 0 1.5h-16a.75.75 0 0 1-.75-.75m.75-6.75a.75.75 0 0 0 0 1.5h16a.75.75 0 0 0 0-1.5z" />
+        </svg>
+      </button>
     </>
   )
 }
