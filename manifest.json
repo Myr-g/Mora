@@ -5,6 +5,7 @@
   "start_url": "/Mora/",
   "scope": "/Mora/",
   "display": "standalone",
+  "orientation": "landscape",
   "background_color": "#121212",
   "theme_color": "#4A5563",
   "icons": [
