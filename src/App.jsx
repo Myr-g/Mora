@@ -143,7 +143,7 @@ function App()
             </button>
           </div>
 
-          <div className='sidebar-item' onClick={() => {setSelectedDeckId(null); setIsStudying(false); setStudyMode(null);}}>
+          <div className='sidebar-item' onClick={() => {setSelectedDeckId(null); setIsStudying(false); setStudyMode(null); setCollapsed(!collapsed);}}>
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24">
               <path d="M0 0h24v24H0z" fill="none" />
 	            <g fill="none" fillRule="evenodd">
@@ -196,7 +196,7 @@ function App()
           </div>
         </div>
 
-        <div className={`mora-overlay ${collapsed ? "" : "visible"}`} />
+        <div className={`mobile-sidebar-overlay ${collapsed ? "" : "visible"}`} onClick={() => setCollapsed(!collapsed)}/>
       </div>
 
       <button className={`mobile-sidebar-toggle ${collapsed ? "sidebar-collapsed" : ""}`} onClick={() => setCollapsed(!collapsed)}>

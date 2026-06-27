@@ -144,6 +144,7 @@ body {
   border: none;
   color: var(--text-muted);
   cursor: pointer;
+  padding: 0;
 }
 
 .sidebar-header button:hover {
@@ -191,63 +192,6 @@ body {
 
 .mobile-sidebar-toggle {
   display: none;
-}
-
-@media (max-width: 768px) {
-  .mora-layout {
-    display: block; 
-  }
-
-  .mora-sidebar {
-    position: fixed;
-    left: 0;
-    top: 0;
-    width: 220px;
-    height: 100vh;
-    background: var(--bg-paper);
-    border-right: 1px solid var(--border);
-    z-index: 1000;
-    transform: translateX(0);
-    transition: transform 0.35s ease;
-  }
-
-  .mora-sidebar.collapsed {
-    transform: translateX(-100%);
-    transition: transform 0.35s ease;
-  }
-
-  .mobile-sidebar-toggle {
-    position: absolute;
-    display: none;
-    top: 0;
-    left: 0;
-    padding-top: 1.25rem;
-    padding-left: 1rem;
-
-    background: none;
-    border: none;
-    color: var(--text-muted);
-  }
-
-  .mobile-sidebar-toggle.sidebar-collapsed {
-    display: flex;
-  }
-
-  .mora-content-container {
-    overflow-y: auto;
-    background: var(--bg-page);
-    padding: 0;
-  }
-
-  .mora-content-container.sidebar-collapsed {
-    padding: 0;
-  }
-
-  .mora-content {
-    max-width: 85%;
-    padding-top: 0.5rem;
-    padding-bottom: 1rem;
-  }
 }
 
 /*---- Deck List ----*/
@@ -1359,4 +1303,116 @@ body {
   color: var(--correct);
   font-size: 0.9rem;
   font-style: italic;
+}
+
+@media (max-width: 768px) {
+  .mora-layout {
+    display: block;
+  }
+
+  .mora-sidebar {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 250px;
+    height: 100vh;
+    background: var(--bg-paper);
+    border-right: 1px solid var(--border);
+    z-index: 1000;
+    transform: translateX(0);
+    transition: transform 0.35s cubic-bezier(0.25, 0.8, 0.25, 1);
+  }
+  
+  .sidebar-header .sidebar-toggle {
+    opacity: 0;
+  }
+
+  .mora-sidebar.collapsed {
+    transform: translateX(-250px);
+  }
+
+  .mobile-sidebar-toggle {
+    position: absolute;
+    display: none;
+    top: 0;
+    left: 0;
+    padding-top: 1.25rem;
+    padding-left: 1rem;
+
+    background: none;
+    border: none;
+    color: var(--text-muted);
+  }
+
+  .mobile-sidebar-toggle.sidebar-collapsed {
+    display: flex;
+  }
+
+  .mobile-sidebar-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+
+    backdrop-filter: blur(10px);
+
+    pointer-events: none;
+
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .mobile-sidebar-overlay.visible {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .mora-content-container {
+    overflow-y: auto;
+    background: var(--bg-page);
+    padding: 0;
+  }
+
+  .mora-content-container.sidebar-collapsed {
+    padding: 0;
+  }
+
+  .mora-content {
+    max-width: 85%;
+    padding-top: 0.5rem;
+    padding-bottom: 1rem;
+  }
+
+  .flashcards {
+    display: flex;
+    flex-direction: row;
+  }
+
+  .flashcard {
+    min-height: 175px;
+  }
+
+  .multiple-choice {
+    width: 85%;
+  }
+
+  .matching {
+    width: 85%;
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 2rem;
+  }
+
+  .matching-questions {
+    width: 70%;
+  }
+
+  .matching-answer {
+    width: 80%;
+  }
+
+  .write-the-definition {
+    width: 85%;
+  }
 }
