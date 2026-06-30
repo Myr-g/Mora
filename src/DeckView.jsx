@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import './App.css'
 
 function DeckView({ decks, setDecks, selectedDeckId, setSelectedDeckId, selectedDeck, showStudyModal, setShowStudyModal, reverseMode, setReverseMode,setIsStudying, setStudyMode })
@@ -80,6 +80,36 @@ function DeckView({ decks, setDecks, selectedDeckId, setSelectedDeckId, selected
       card.back.toLowerCase().includes(search.toLowerCase())
     );
 
+    // Keyboard Shortcuts
+    const searchRef = useRef(null);
+
+    useEffect(() => {
+      const handleKeyDown = (e) => {
+        const isTyping = ["INPUT"].includes(document.activeElement.tagName);
+        
+        if(!isTyping && e.key === "n") 
+        {
+          e.preventDefault();
+          createCard();
+        }
+
+        if(!isTyping && e.key ==="f")
+        {
+          e.preventDefault();
+          searchRef.current?.focus(); 
+        }
+
+        if(showStudyModal && e.key === "Escape")
+        {
+          e.preventDefault();
+          setShowStudyModal(false);
+        }
+      };
+      
+      window.addEventListener("keydown", handleKeyDown);
+      return () => window.removeEventListener("keydown", handleKeyDown);
+    }, [showStudyModal]);
+
     return (
       <>
         <section className='deck-header'>
@@ -131,7 +161,7 @@ function DeckView({ decks, setDecks, selectedDeckId, setSelectedDeckId, selected
         </div>
 
         <div className='card-search-container'>
-          <input className="card-search" placeholder="Search cards..." value={search} onChange={e => setSearch(e.target.value)}/>
+          <input ref={searchRef} className="card-search" placeholder="Search cards..." value={search} onChange={e => setSearch(e.target.value)}/>
 
           {filteredCards.length === 0 && (
             <p className="empty-search">No cards found.</p>

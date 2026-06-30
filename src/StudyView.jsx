@@ -36,6 +36,20 @@ function StudyView({ setDecks, selectedDeck, setIsStudying, studyMode, setStudyM
         return arr;
     }
 
+    // Keyboard Shortcuts
+    useEffect(() => {
+      const handleKeyDown = (e) => {
+        if(showStudyModal && e.key === "Escape")
+        {
+          e.preventDefault();
+          setShowStudyModal(false);
+        }
+      };
+      
+      window.addEventListener("keydown", handleKeyDown);
+      return () => window.removeEventListener("keydown", handleKeyDown);
+    }, [showStudyModal]);
+
     return (
         <>
             {studyMode === "review" && (

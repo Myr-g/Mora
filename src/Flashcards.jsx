@@ -159,6 +159,20 @@ function Flashcards({ setDecks, selectedDeck, studyCards, setStudyCards, current
         return { ref, height };
     }
 
+    // Keyboard Shortcuts
+    useEffect(() => {
+      const handleKeyDown = (e) => {
+        if(e.key === " " || e.key === "Spacebar") 
+        {
+            e.preventDefault();
+            flipCard();
+        }
+      };
+      
+      window.addEventListener("keydown", handleKeyDown);
+      return () => window.removeEventListener("keydown", handleKeyDown);
+    }, []);
+
     return (
         <>
             <section className='study-view-header'>

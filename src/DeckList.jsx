@@ -25,6 +25,22 @@ function DeckList({decks, setDecks, selectedDeckId, setSelectedDeckId })
         setDecks(decks => decks.map(deck => deck.id === id ? {...deck, name: newName} : deck));
     };
 
+    // Keyboard Shortcuts
+    useEffect(() => {
+      const handleKeyDown = (e) => {
+        const isTyping = ["INPUT"].includes(document.activeElement.tagName);
+        
+        if(!isTyping && e.key === "n") 
+        {
+          e.preventDefault();
+          createDeck();
+        }
+      };
+      
+      window.addEventListener("keydown", handleKeyDown);
+      return () => window.removeEventListener("keydown", handleKeyDown);
+    }, []);
+
     return (
         <>
         <section className='header'>
