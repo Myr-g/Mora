@@ -23,9 +23,9 @@ This app lets you build your own decks, fill them with words you want to learn, 
 - Search within a deck to quickly find specific cards
 
 ### Study Modes
-- Review Flashcards — simple front/back review
+- Review Flashcards - simple front/back review
 
-- SRS Flashcards — spaced repetition scheduling
+- SRS Flashcards - spaced repetition scheduling
 
 - Multiple Choice
 
@@ -38,18 +38,27 @@ This app lets you build your own decks, fill them with words you want to learn, 
 ### Import & Export
 - Export all decks at once
 
-- Import to replace your current decks
+- Import replaces all of your current decks
 
 - Useful for backups or moving between devices
 
 ### Interface & Experience
 - Light & dark themes
   
-- Deck and card‑level due counters (subtle glow around them)
+- Indicators for decks with due cards/cards that are due (subtle glowing outline)
 
 - Fully offline‑friendly
 
-- Installable as a PWA (mobile + desktop)
+- Installable as a PWA
+
+## Keyboard Shortcuts
+| Shortcut | Description |
+| -------- | ----------- |
+| <kbd>N</kbd> | Create a new deck (while viewing the deck list) |
+| <kbd>N</kbd> | Create a new card (while viewing a deck) |
+| <kbd>F</kbd> | Focus search bar |
+| <kbd>ESC</kbd> | Close the study options pop up |
+| <kbd>SPACEBAR</kbd> | Flip card (while studying flashcards) |
 
 ## Tech
 JavaScript · React · Vite
