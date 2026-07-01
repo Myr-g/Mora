@@ -3,6 +3,7 @@ import './App.css'
 import DeckList from './DeckList.jsx';
 import DeckView from './DeckView.jsx';
 import StudyView from './StudyView.jsx';
+import About from './About.jsx';
 
 function App() 
 {
@@ -22,6 +23,13 @@ function App()
   useEffect(() => { localStorage.setItem("decks", JSON.stringify(decks)); }, [decks]);
 
   const [selectedDeckId, setSelectedDeckId] = useState(() => {
+    if(!sessionStorage.getItem("sessionActive")) 
+    {
+      localStorage.removeItem("selectedDeckId");
+      sessionStorage.setItem("sessionActive", "true");
+      return null;
+    }
+
     return localStorage.getItem("selectedDeckId") || null;
   });
 
@@ -128,6 +136,8 @@ function App()
   const [collapsed, setCollapsed] = useState(true);
   const [reverseMode, setReverseMode] = useState(false);
 
+  const [showAbout, setShowAbout] = useState(false);
+
   return (
     <>
       <div className='mora-layout'>
@@ -143,7 +153,7 @@ function App()
             </button>
           </div>
 
-          <div className='sidebar-item' onClick={() => {setSelectedDeckId(null); setIsStudying(false); setStudyMode(null); setCollapsed(!collapsed);}}>
+          <div className='sidebar-item' onClick={() => {setSelectedDeckId(null); setIsStudying(false); setStudyMode(null); setCollapsed(!collapsed); setShowAbout(false);}}>
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24">
               <path d="M0 0h24v24H0z" fill="none" />
 	            <g fill="none" fillRule="evenodd">
@@ -163,7 +173,7 @@ function App()
           </div>
 
           <div className='sidebar-item' onClick={() => importDecks()}>
-            <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 16 16">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
               <path d="M0 0h16v16H0z" fill="none" />
               <path fill="currentColor" d="m9 10.114l1.85-1.943a.52.52 0 0 1 .77 0c.214.228.214.6 0 .829l-1.95 2.05a1.55 1.55 0 0 1-2.31 0L5.41 9a.617.617 0 0 1 0-.829a.52.52 0 0 1 .77 0L8 10.082V1.556C8 1.249 8.224 1 8.5 1s.5.249.5.556zM4.18 6a.99.99 0 0 0-.972.804l-1.189 6Q2 12.9 2 13c0 .552.444 1 .99 1h11.02q.098 0 .194-.02a1 1 0 0 0 .778-1.176l-1.19-6a.99.99 0 0 0-.97-.804zM6 5v1h5V5h1.825c.946 0 1.76.673 1.946 1.608l1.19 6A2 2 0 0 1 14.016 15H2.984a1.992 1.992 0 0 1-1.945-2.392l1.19-6C2.414 5.673 3.229 5 4.174 5z" />
             </svg>
@@ -172,26 +182,40 @@ function App()
           </div>
 
           <div className='sidebar-item' onClick={() => setTheme(theme === "Dark" ? "Light" : "Dark")}>
-            <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 32 32">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 32 32">
 	            <path d="M0 0h32v32H0z" fill="none" />
 	            <path fill="currentColor" d="M15.653 7.25c-3.417 0-8.577.983-8.577 3.282c0 1.91 2.704 3.23 1.69 3.89c-1.02.665-2.683-1.85-4.047-1.85c-1.654 0-2.816 1.435-2.816 2.927c0 4.557 6.326 8.25 13.75 8.25c7.423 0 13.442-3.693 13.442-8.25c0-4.556-6.02-8.25-13.443-8.25zm-5.345 6.27c0-.644.887-1.165 1.98-1.165s1.98.52 1.98 1.166s-.887 1.167-1.98 1.167s-1.98-.523-1.98-1.166zm3.98 8.78c-1.057 0-1.913-.68-1.913-1.52s.856-1.517 1.914-1.517c1.056 0 1.913.68 1.913 1.518s-.857 1.52-1.914 1.52zm5.323-.53c-1.056 0-1.912-.68-1.912-1.518c0-.84.856-1.52 1.913-1.52c1.06 0 1.915.68 1.915 1.52s-.855 1.52-1.914 1.52zm.465-11.11c0-.838.856-1.518 1.914-1.518s1.912.68 1.912 1.518c0 .84-.855 1.518-1.913 1.518c-1.056 0-1.915-.68-1.915-1.518zm4.2 8.822c-1.057 0-1.914-.68-1.914-1.52s.858-1.517 1.915-1.517c1.06 0 1.914.68 1.914 1.518s-.856 1.52-1.915 1.52zm1.01-4.007c-1.057 0-1.913-.68-1.913-1.52c0-.837.856-1.517 1.914-1.517s1.913.68 1.913 1.518c0 .84-.857 1.52-1.914 1.52z" />
             </svg>
             <span>{theme}</span>
           </div>
+
+          <div className='sidebar-divider'></div>
+
+          <div className='sidebar-item' onClick={() => setShowAbout(true)}>
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24">
+              <path d="M0 0h24v24H0z" fill="none" />
+              <path fill="currentColor" fillRule="evenodd" d="M22 12c0 5.523-4.477 10-10 10S2 17.523 2 12S6.477 2 12 2s10 4.477 10 10M11 8a1 1 0 0 0 1 1h.008a1 1 0 1 0 0-2H12a1 1 0 0 0-1 1m1 9a1 1 0 0 0 1-1v-5a1 1 0 1 0-2 0v5a1 1 0 0 0 1 1" clipRule="evenodd" />
+            </svg>
+            <span>About</span>
+          </div>
         </div>
 
         <div className={`mora-content-container ${collapsed ? "sidebar-collapsed" : ""}`}>
           <div className='mora-content'>
-            {!selectedDeck && (
+            {!selectedDeck && !showAbout && (
               <DeckList decks={decks} setDecks={setDecks} selectedDeckId={selectedDeckId} setSelectedDeckId={setSelectedDeckId}/>
             )}
 
-            {selectedDeck && !isStudying && (
+            {selectedDeck && !isStudying && !showAbout && (
               <DeckView decks={decks} setDecks={setDecks} selectedDeckId={selectedDeckId} setSelectedDeckId={setSelectedDeckId} selectedDeck={selectedDeck} showStudyModal = {showStudyModal} setShowStudyModal={setShowStudyModal} reverseMode={reverseMode} setReverseMode={setReverseMode} setIsStudying={setIsStudying} setStudyMode={setStudyMode}/>
             )}
 
-            {selectedDeck && isStudying && (
+            {selectedDeck && isStudying && !showAbout && (
               <StudyView setDecks={setDecks} selectedDeck={selectedDeck} setIsStudying={setIsStudying} studyMode={studyMode} setStudyMode={setStudyMode} showStudyModal = {showStudyModal} setShowStudyModal={setShowStudyModal} reverseMode={reverseMode} setReverseMode={setReverseMode}/>
+            )}
+
+            {showAbout && (
+              <About/>
             )}
           </div>
         </div>
